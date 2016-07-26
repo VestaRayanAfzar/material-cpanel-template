@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fa-IR" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport"
+          content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <title ng-bind="pageTitle">Arman CPanel</title>
+    <base href="/"/>
+    <link rel="stylesheet" href="css/app-rtl.css">
+</head>
+<body>
+
+<div ng-controller="rootController as rvm" class="pane" id="base-page">
+    <header class="main-header">
+        <menu-trigger></menu-trigger>
+        <div class="logo-wrapper">
+            <!--<a ui-sref="home"><img src="img/logo-white.png" alt="Vesta Rayan Afzar Logo"></a>-->
+        </div>
+        <div class="toolbar-tools" layout="row">
+            <span flex></span>
+            <md-button class="md-primary" ng-repeat="item in rvm.headerMenuItems track by $index" ui-sref="{{item.state}}">
+                {{item.title}}
+            </md-button>
+        </div>
+    </header>
+    <main class="main-content" flex="100">
+        <div ui-view="master"></div>
+        <footer class="main-footer">
+            <p class="en">&copy; 2016, All rights reserved for <a href="http://projects.vestarayanafzar.com/arman"
+                                                                  target="_blank">vesta
+                Rayan Afzar</a></p>
+        </footer>
+        <sidenav class="main-sidenav" component-id="'main-sidenav'"></sidenav>
+    </main>
+
+</div>
+
+<script src="js/lib.js" async></script>
+<script src="js/app.js" async></script>
+</body>
+</html>

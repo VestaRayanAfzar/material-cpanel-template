@@ -1,0 +1,30 @@
+.sidenav.main-sidenav {
+    //position: fixed;
+    //top: $headerHeight;
+    background: transparentize($dark, .01);
+    //z-index: $zIndexHeader + 1;
+    .main-menu {
+        padding-#{$float}: 20px;
+        a {
+            display: block;
+            color: $light;
+            padding: 7px;
+        }
+    }
+    .sub-menu {
+        //background: grey;
+        padding-#{$float}: 20px;
+        margin-#{$float}: 10px;
+        border-#{$float}: 1px solid transparentize($light, .2);
+    }
+}
+
+.main-sidenav-sidenav-open {
+    [ui-view=master] {
+        padding-#{$float}: $sidenavWidth;
+        //@include rtl(transform, translate3d($sidenavWidth, 0, 0), translate3d(-$sidenavWidth, 0, 0));
+        @include mediaQueryBelow { /*(0, ($layoutBreak + $layoutSmallMin)/2)*/
+            @include rtl(transform, translate3d(100%, 0, 0), translate3d(-100%, 0, 0));
+        }
+    }
+}

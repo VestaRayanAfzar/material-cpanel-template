@@ -1,0 +1,25 @@
+.sidenav {
+    position: fixed;
+    #{$float}: 0;
+    z-index: 9;
+    top: $headerHeight;
+    bottom: 0;
+    width: $sidenavWidth;
+    max-width: $sidenavWidth;
+    background: $light;
+    transition: all $transitionMediumDuration $easeInOut;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    @include translate3d(100%, 0, 0);
+    &.sidenav-open {
+        @include translate3d(0, 0, 0);
+    }
+    @include mediaQueryBelow {
+        width: 75vw;
+    }
+    @include mediaQuery(0, ($layoutBreak + $layoutSmallMin)/2) {
+        width: 100%;
+        max-width: none;
+    }
+}

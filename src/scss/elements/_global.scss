@@ -1,0 +1,90 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: $baseFontFamily;
+    line-height: 1.2;
+    direction: $direction;
+    text-overflow: clip;
+}
+
+body {
+    font-size: $fontSizeBase;
+    line-height: 1.2;
+    color: $dark;
+}
+
+h1 {
+    font-size: $fontSizeXLarge;
+}
+
+h2 {
+    font-size: $fontSizeLarge;
+}
+
+h3 {
+    font-size: $fontSizeMedium;
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: $blue;
+    outline: 0 !important;
+    &:visited {
+        color: $indigo;
+    }
+}
+
+.pane {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+.en {
+    font-family: Verdana, sans-serif;
+    direction: ltr;
+}
+
+[ui-view=master] {
+    background: $bodyBgColor;
+}
+
+.checkbox-item {
+    display: inline-block;
+    margin-#{$opposite-float}: 15px;
+}
+
+.acl-checkbox {
+    direction: ltr;
+}
+
+.content-image {
+    max-width: 250px;
+    height: auto;
+}
+
+// yellowish background color of input field in case of choosing suggestion
+input:-webkit-autofill {
+    background: $light !important;
+}
+
+// material
+.md-input-wrapper {
+    [ng-messages] {
+        color: $error !important;
+        font-size: 12px;
+    }
+    md-chips .md-chips {
+        margin-bottom: 18px;
+    }
+}
+
+md-autocomplete[md-floating-label] md-input-container {
+    padding-bottom: 0;
+}

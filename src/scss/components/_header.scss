@@ -1,0 +1,42 @@
+.main-header {
+    background: transparentize($dark, .05);
+    .logo-wrapper {
+        position: absolute;
+        top: 10px;
+        left: 5px;
+        height: $headerHeight - 20px;
+        img {
+            height: 100%;
+            width: auto;
+        }
+    }
+    nav {
+        display: inline-block;
+        @include mediaQueryBelow {
+            display: none;
+        }
+    }
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+    li {
+        display: inline-block;
+        a {
+            color: $light;
+            display: inline-block;
+            height: $headerHeight;
+            font-size: $fontSizeSmall;
+            padding: floor(($headerHeight - $fontSizeMedium)/2);
+        }
+    }
+    .quick-access{
+        justify-content: flex-end;
+        align-items: center;
+        height:100%;
+        a{
+            height:auto;
+            padding: 0;
+        }
+    }
+}
