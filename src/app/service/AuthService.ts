@@ -95,14 +95,14 @@ export class AuthService {
      Check if user has access to all actions of all resources
      */
     public hasAccessToState(state:string):boolean {
+        if (!state) return true;
         var requiredPermissions = AuthService.stateResourceMap[state];
         if (!requiredPermissions) return AuthService.defaultPolicy == AclPolicy.Allow;
-        for (var resource in requiredPermissions) {
-            if (requiredPermissions.hasOwnProperty(resource)) {
+        for (let resources = Object.keys(requiredPermissions), i = resources.length; i--;) {
+            let resource = resources[i];
                 var actions = requiredPermissions[resource];
-                for (var i = actions.length; i--;) {
-                    if (!this.isAllowed(resource, actions[i])) return false;
-                }
+            for (let j = actions.length; j--;) {
+                if (!this.isAllowed(resource, actions[j])) return false;
             }
         }
         return true;

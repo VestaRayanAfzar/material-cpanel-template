@@ -7,7 +7,7 @@ export interface IClientAppSetting extends IVariantClientAppSetting {
 }
 
 export let setting:IClientAppSetting = {
-    name: 'materialWebTemplate',
+    name: 'materialCPanelTemplate',
     version: {
         app: '0.1.0',
         api: 'v1'

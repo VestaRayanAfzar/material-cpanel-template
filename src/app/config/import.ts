@@ -11,6 +11,8 @@ import {AuthService} from "../service/AuthService";
 import {ApiService} from "../service/ApiService";
 import {TranslateService} from "../service/TranslateService";
 import {I18nService} from "../service/I18nService";
+import {AppMenuService} from "../service/AppMenuService";
+import {LogService} from "../service/LogService";
 import {translateFilter} from "../filter/translateFilter";
 import {paginationFilter} from "../filter/paginationFilter";
 import {dateTimeFilter} from "../filter/dateTimeFilter";
@@ -22,6 +24,7 @@ import {roundImage} from "../directive/roundImage";
 import {viewportSpy} from "../directive/viewportSpy";
 import {sidenav} from "../directive/sidenav";
 import {menuTrigger} from "../directive/menuTrigger";
+import {appMenu} from "../directive/appMenu";
 import {HomeController} from "../modules/HomeController";
 import {LoginController} from "../modules/account/LoginController";
 import {LogoutController} from "../modules/account/LogoutController";
@@ -35,8 +38,6 @@ import {AclController} from "../modules/acl/AclController";
 import {UserAddController} from "../modules/acl/user/UserAddController";
 import {UserEditController} from "../modules/acl/user/UserEditController";
 import {UserController} from "../modules/acl/user/UserController";
-import {AppMenuService} from "../service/AppMenuService";
-import {LogService} from "../service/LogService";
 ///<vesta:import/>
 
 interface IExporter {
@@ -54,6 +55,7 @@ export const exporter:IExporter = {
         authService: AuthService,
         databaseService: DatabaseService,
         formService: FormService,
+        logService: LogService,
         storageService: StorageService,
         appCacheService: AppCacheService,
         notificationService: NotificationService,
@@ -61,7 +63,6 @@ export const exporter:IExporter = {
         datePickerService: DatePickerService,
         sidenavService: SidenavService,
         appMenuService: AppMenuService,
-        logService: LogService,
         ///<vesta:ngService/>
     },
     filter: {
@@ -79,6 +80,7 @@ export const exporter:IExporter = {
         viewportSpy: viewportSpy,
         sidenav: sidenav,
         menuTrigger: menuTrigger,
+        appMenu: appMenu,
         ///<vesta:ngDirective/>
     },
     controller: {

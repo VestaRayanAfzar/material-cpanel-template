@@ -32,11 +32,13 @@ export class RootController extends BaseController {
     }
 
     private setAppMenues() {
-        this.sidenavService.setMenu('main-sidenav', this.appMenuService.getMenu('app-menu'));
         this.headerMenuItems = this.authService.isLoggedIn() ? [
-            {title: '????', state: 'logout'},
+            {title: 'Exit', state: 'logout'},
         ] : [
-            {title: '????', state: 'login'}
-        ]
+            {title: 'Login', state: 'login'}
+        ];
+        this.appMenuService.getMenu('main-menu').then(menu=> {
+            this.sidenavService.setMenu('main-sidenav', menu.items);
+        });
     }
 }

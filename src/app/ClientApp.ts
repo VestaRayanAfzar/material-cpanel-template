@@ -47,7 +47,7 @@ export class ClientApp {
         this.module = angular.module(this.setting.name, ['ngMessages', 'ui.router', 'ngMaterial', 'md.data.table']);
         this.module.constant('Setting', this.setting);
         // CONFIG
-        AppMenuService.setMenuItems('app-menu', AppMenu);
+        AppMenuService.setMenuItems('main-menu', AppMenu);
         AuthService.setDefaultPolicy(AclPolicy.Deny);
         this.module.config(['$stateProvider', '$locationProvider', '$urlRouterProvider', '$httpProvider',
             function ($stateProvider:IStateProvider, $locationProvider:ILocationProvider, $urlRouterProvider:IUrlRouterProvider, $httpProvider:IHttpProvider) {

@@ -20,7 +20,7 @@ export abstract class BaseController {
     protected notificationService:NotificationService = NotificationService.getInstance();
     protected Setting:IClientAppSetting = ClientApp.Setting;
 
-    protected getDataTableOptions(title, loadMore) {
+    protected getDataTableOptions(title:string, loadMore?:Function) {
         return {
             showFilter: false,
             title: title,

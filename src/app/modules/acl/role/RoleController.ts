@@ -24,17 +24,7 @@ export class RoleController extends BaseController {
 
     constructor(private $mdDialog:IDialogService) {
         super();
-        this.dtOption = {
-            showFilter: false,
-            title: 'List of roles',
-            filter: '',
-            order: 'id',
-            rowsPerPage: [10, 20, 50],
-            limit: 10,
-            page: 1,
-            total: 10/*,
-             loadMore: this.loadMore.bind(this)*/
-        };
+        this.dtOption = this.getDataTableOptions('List of roles');
         this.getAllPermissions();
         this.loadData();
     }
@@ -42,11 +32,11 @@ export class RoleController extends BaseController {
     private loadData() {
         this.apiService.get<IQueryRequest<IRole>, IQueryResult<IRole>>('role', {limit: 50})
             .then(result=> {
-                if (result.error) return this.notificationService.toast(result.error.message);
                 this.rolesList.set(result.items);
                 // this.rolesList.removeByProperty('name', 'admin');
                 this.dtOption.total = result.total;
-            });
+            })
+            .catch(reason=> this.notificationService.toast(reason.error.message))
     }
 
     private getAllPermissions() {
