@@ -24,22 +24,22 @@
       "commit": "d969b903d1fce89a5e43828ec68458b4f852db4d"
     },
     "express/express.d.ts": {
-      "commit": "f481e77dfca5a146db1b4f5f20f15929b30c8729"
+      "commit": "f5407eba29c04fb8387c86df27512bd055b195d2"
     },
     "serve-static/serve-static.d.ts": {
-      "commit": "f481e77dfca5a146db1b4f5f20f15929b30c8729"
+      "commit": "f5407eba29c04fb8387c86df27512bd055b195d2"
     },
     "express-serve-static-core/express-serve-static-core.d.ts": {
-      "commit": "f481e77dfca5a146db1b4f5f20f15929b30c8729"
+      "commit": "f5407eba29c04fb8387c86df27512bd055b195d2"
     },
     "morgan/morgan.d.ts": {
-      "commit": "f481e77dfca5a146db1b4f5f20f15929b30c8729"
+      "commit": "f5407eba29c04fb8387c86df27512bd055b195d2"
     },
     "node/node.d.ts": {
-      "commit": "f481e77dfca5a146db1b4f5f20f15929b30c8729"
+      "commit": "f5407eba29c04fb8387c86df27512bd055b195d2"
     },
     "mime/mime.d.ts": {
-      "commit": "f481e77dfca5a146db1b4f5f20f15929b30c8729"
+      "commit": "f5407eba29c04fb8387c86df27512bd055b195d2"
     }
   }
 }

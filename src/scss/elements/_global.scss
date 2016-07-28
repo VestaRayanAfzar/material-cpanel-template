@@ -12,6 +12,7 @@ html, body {
 body {
     font-size: $fontSizeBase;
     line-height: 1.2;
+    background: $bodyBgColor;
     color: $dark;
 }
 
@@ -43,7 +44,7 @@ a {
 .pane {
     height: 100%;
     width: 100%;
-    position: absolute;
+    position: relative;
 }
 
 .en {
@@ -51,27 +52,32 @@ a {
     direction: ltr;
 }
 
-[ui-view=master] {
-    background: $bodyBgColor;
-}
-
 .checkbox-item {
     display: inline-block;
     margin-#{$opposite-float}: 15px;
+}
+
+.heading {
+    color: $primary;
+    margin-top: 30px;
 }
 
 .acl-checkbox {
     direction: ltr;
 }
 
-.content-image {
-    max-width: 250px;
-    height: auto;
-}
-
-// yellowish background color of input field in case of choosing suggestion
-input:-webkit-autofill {
-    background: $light !important;
+.input-container {
+    display: inline-block;
+    label {
+        display: block;
+        color: $darkGray;
+    }
+    input, textarea, select {
+        display: block;
+        border: solid 1px $silver;
+        height: 30px;
+        padding: 5px;
+    }
 }
 
 // material

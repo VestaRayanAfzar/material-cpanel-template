@@ -6,6 +6,7 @@ export class AboutController extends BaseController {
 
     constructor() {
         super();
+        this.metaTagsService.setTitle('Vesta :: About');
     }
 
     public static registerPermissions() {

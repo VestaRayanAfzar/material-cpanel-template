@@ -29,6 +29,7 @@ export interface IExtRootScopeService extends IRootScopeService {
     locale:ILocale;
     pageTitle:string;
     isDeviceOrSmall:boolean;
+    user:IUser;
 }
 
 export class ClientApp {
@@ -59,7 +60,7 @@ export class ClientApp {
          * After this, these services can be used by their `getInstance` method. e.g AuthService.getInstance()
          * This action will cause the DI on class names to be much shorter => increasing the readability
          */
-        this.module.run(['apiService', 'authService', 'logService', 'formService', 'notificationService', (apiService, authService, logService, formService, notificationService)=> {
+        this.module.run(['apiService', 'authService', 'logService', 'formService', 'notificationService', 'metaTagsService', (apiService, authService, logService, formService, notificationService, metaTagsService)=> {
         }]);
         // RUN
         this.module.run(['$rootScope', '$state', 'networkService', 'i18nService', 'appCacheService',
@@ -100,8 +101,9 @@ export class ClientApp {
     }
 
     private aclCheck($rootScope:IExtRootScopeService, $state:IStateService) {
+        let authService = AuthService.getInstance();
         $rootScope.$on('$stateChangeStart', (event:IAngularEvent, toState:IState)=> {
-            if (!AuthService.getInstance().hasAccessToState(toState.name)) {
+            if (!authService.hasAccessToState(toState.name)) {
                 event.preventDefault();
                 console.log(`Prevent from going to forbidden state "${toState.name}"`);
                 return false;

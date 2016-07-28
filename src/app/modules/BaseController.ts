@@ -1,12 +1,12 @@
-import {IFileKeyValue, ApiService} from "../service/ApiService";
+import {IPromise} from "angular";
 import {NotificationService} from "../service/NotificationService";
-import {IUpsertResult} from "vesta-schema/ICRUDResult";
-import {AuthService} from "../service/AuthService";
-import {LogService} from "../service/LogService";
 import {FormService} from "../service/FormService";
-import {IClientAppSetting} from "../config/setting";
+import {AuthService} from "../service/AuthService";
+import {ApiService, IFileKeyValue} from "../service/ApiService";
+import {LogService} from "../service/LogService";
 import {ClientApp} from "../ClientApp";
-import IPromise = angular.IPromise;
+import {MetaTagsService} from "../service/MetaTagsService";
+import {IUpsertResult} from "vesta-schema/ICRUDResult";
 
 export interface IBaseController {
     registerPermissions:()=>void;
@@ -18,7 +18,8 @@ export abstract class BaseController {
     protected logService:LogService = LogService.getInstance();
     protected formService:FormService = FormService.getInstance();
     protected notificationService:NotificationService = NotificationService.getInstance();
-    protected Setting:IClientAppSetting = ClientApp.Setting;
+    protected metaTagsService:MetaTagsService = MetaTagsService.getInstance();
+    protected Setting = ClientApp.Setting;
 
     protected getDataTableOptions(title:string, loadMore?:Function) {
         return {

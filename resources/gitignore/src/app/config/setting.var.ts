@@ -12,10 +12,10 @@ export interface IVariantClientAppSetting {
     }
 }
 
-export var VariantClientAppSetting:IVariantClientAppSetting = {
+export let VariantClientAppSetting:IVariantClientAppSetting = {
     env: 'production',
     api: 'http://localhost:3000/api/v1',
-    asset: 'http://localhost:8000/asset',
+    asset: 'http://localhost:3000/asset',
     cache: {
         api: 0
     },

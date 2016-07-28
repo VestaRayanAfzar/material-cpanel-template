@@ -28,7 +28,7 @@ module.exports = function (dir, setting) {
     });
 
     gulp.task('asset:template', ['asset:etc'], function () {
-        findInFileAndReplace(dir.buildWeb + '/offline.manifest', '__DATE__', getDate());
+        // findInFileAndReplace(dir.buildWeb + '/offline.manifest', '__DATE__', getDate());
         if (setting.production) {
             // adding base href for projects sub directory
             findInFileAndReplace(dir.buildWeb + '/index.html', '<base href="/"/>', '<base href="/cpanel/"/>');

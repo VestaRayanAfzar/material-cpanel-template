@@ -9,12 +9,12 @@ export interface IMenuItem {
 export const AppMenu:Array<IMenuItem> = [];
 AppMenu.push({title: 'Dashboard', state: 'home'});
 AppMenu.push({
-    title: 'سطح دسترسی',
+    title: 'Access Control',
     state: 'acl',
     isAbstract: true,
     url: 'acl',
     children: [
-        {title: 'نقش', state: 'acl.role'},
-        {title: 'گروه نقش', state: 'acl.roleGroup'},
-        {title: 'کاربر', state: 'acl.user'}]
+        {title: 'Role', state: 'acl.role'},
+        {title: 'Role Group', state: 'acl.roleGroup'},
+        {title: 'User', state: 'acl.user'}]
 });

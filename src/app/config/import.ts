@@ -1,5 +1,5 @@
-import {RootController} from "../modules/RootController";
 import {SidenavService} from "../service/SidenavService";
+import {MetaTagsService} from "../service/MetaTagsService";
 import {DatePickerService} from "../service/DatePickerService";
 import {NetworkService} from "../service/NetworkService";
 import {NotificationService} from "../service/NotificationService";
@@ -22,12 +22,15 @@ import {dateInput} from "../directive/dateInput";
 import {fileUpload} from "../directive/fileUpload";
 import {roundImage} from "../directive/roundImage";
 import {viewportSpy} from "../directive/viewportSpy";
+import {metaTags} from "../directive/metaTags";
 import {sidenav} from "../directive/sidenav";
 import {menuTrigger} from "../directive/menuTrigger";
 import {appMenu} from "../directive/appMenu";
+import {carousel} from "../directive/carousel";
+import {RootController} from "../modules/RootController";
 import {HomeController} from "../modules/HomeController";
+import {AboutController} from "../modules/AboutController";
 import {LoginController} from "../modules/account/LoginController";
-import {LogoutController} from "../modules/account/LogoutController";
 import {RoleAddController} from "../modules/acl/role/RoleAddController";
 import {RoleEditController} from "../modules/acl/role/RoleEditController";
 import {RoleController} from "../modules/acl/role/RoleController";
@@ -61,6 +64,7 @@ export const exporter:IExporter = {
         notificationService: NotificationService,
         networkService: NetworkService,
         datePickerService: DatePickerService,
+        metaTagsService: MetaTagsService,
         sidenavService: SidenavService,
         appMenuService: AppMenuService,
         ///<vesta:ngService/>
@@ -78,16 +82,18 @@ export const exporter:IExporter = {
         fileUpload: fileUpload,
         roundImage: roundImage,
         viewportSpy: viewportSpy,
+        metaTags: metaTags,
         sidenav: sidenav,
         menuTrigger: menuTrigger,
         appMenu: appMenu,
+        carousel: carousel,
         ///<vesta:ngDirective/>
     },
     controller: {
         rootController: RootController,
         homeController: HomeController,
+        aboutController: AboutController,
         loginController: LoginController,
-        logoutController: LogoutController,
         roleAddController: RoleAddController,
         roleEditController: RoleEditController,
         roleController: RoleController,

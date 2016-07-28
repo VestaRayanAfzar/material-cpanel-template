@@ -9,7 +9,7 @@
     width: 80%;
     margin: auto;
     //overflow: hidden;
-    @include mediaQuery(0, $layoutBreak) {
+    @include mediaQuery(0, $layoutSmallMax) {
         width: 100%;
         height: 100%;
         max-width: 100%;

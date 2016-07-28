@@ -1,6 +1,12 @@
-$layoutSmallMin: 300px;
-$layoutBreak: 680px;
+$layoutSmallMin: 320px;
+$layoutSmallMax: 425px;
+$layoutMediumMin: $layoutSmallMax + 1;
+$layoutMediumMax: 768;
+$layoutLargeMin: $layoutMediumMax + 1;
+$layoutLargeMax: 1024px;
+$layoutXLargeMin: $layoutLargeMax + 1;
 // font
+$fontSizeXSmall: fontSize(.65);
 $fontSizeSmall: fontSize(.85);
 $fontSizeBase: fontSize(1);
 $fontSizeMedium: fontSize(1.25);
@@ -20,9 +26,10 @@ $easeOut: cubic-bezier(0, 0, 0.153, 0.946);
 $easeInOut: cubic-bezier(0.465, 0.183, 0.153, 0.946);
 // zIndex
 $zIndexBase: 1;
-$zIndexHeader: 8;
-$zIndexDialog: 9;
-$zIndexDatePicker: 99;
+$zIndexSidenav: 90;
+$zIndexHeader: 91;
+$zIndexDialog: 92;
+$zIndexDatePicker: 92;
 //
 $borderRadius: 5px;
 $headerHeight: 64px;

@@ -1,10 +1,11 @@
 %animated-horizontal {
-    $animationOffsetHorizontal: 5%;
+    $animationOffsetHorizontal: getValueByDirection(5%, -5%);
     transition: all $transitionMediumDuration $easeInOut;
     will-change: transform, opacity;
+    @include translate3d(0);
         &.ng-enter {
-            transform: translate3d($animationOffsetHorizontal, 0, 0);
-        //opacity: 0;
+        transform: translate3d(-$animationOffsetHorizontal, 0, 0);
+        opacity: 0;
         }
 
         &.ng-enter.ng-enter-active, &.ng-leave {
@@ -15,7 +16,10 @@
     &.ng-leave {
         position: absolute;
         top: 0;
+        left: 0;
+        right: 0;
     }
+
         &.ng-leave.ng-leave-active {
             transform: translate3d($animationOffsetHorizontal, 0, 0);
         opacity: 0;

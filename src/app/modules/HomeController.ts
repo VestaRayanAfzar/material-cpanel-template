@@ -8,6 +8,7 @@ export class HomeController extends BaseController {
     constructor() {
         super();
         this.date = Date.now();
+        this.metaTagsService.setTitle('Vesta :: Dashboard');
     }
 
     public static registerPermissions() {

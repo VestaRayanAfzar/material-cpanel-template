@@ -58,14 +58,38 @@
 
 }
 
+@mixin mediaQuerySmall() {
+    @include mediaQuery(0, $layoutSmallMax) {
+        @content;
+    }
+}
+
+@mixin mediaQueryMedium() {
+    @include mediaQuery($layoutMediumMin, $layoutMediumMax) {
+        @content;
+    }
+}
+
+@mixin mediaQueryLarge() {
+    @include mediaQuery($layoutLargeMin, $layoutLargeMax) {
+        @content;
+    }
+}
+
+@mixin mediaQueryXLarge() {
+    @include mediaQuery($layoutXLargeMin) {
+        @content;
+    }
+}
+
 @mixin mediaQueryBelow() {
-    @include mediaQuery(0, $layoutBreak) {
+    @include mediaQuery(0, $layoutMediumMax) {
         @content;
     }
 }
 
 @mixin mediaQueryAbove() {
-    @include mediaQuery($layoutBreak + 1) {
+    @include mediaQuery($layoutLargeMin) {
         @content;
     }
 }

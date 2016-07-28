@@ -1,45 +1,40 @@
 import {ApiService} from "./ApiService";
 import {ClientApp} from "../ClientApp";
-export class LogService {
-    private static instance:LogService = null;
-    public static $inject = ['apiService'];
-    private isProduction = true;
+import {NotificationService} from "./NotificationService";
 
-    constructor(private apiService:ApiService) {
+export class LogService {
+    private static LogType = {Log: 'log', Info: 'info', Warn: 'warn', Error: 'error'};
+    private static instance:LogService = null;
+    private isProduction = true;
+    public static $inject = ['apiService', 'notificationService'];
+
+    constructor(private apiService:ApiService, private notificationService:NotificationService) {
         LogService.instance = this;
         this.isProduction = ClientApp.Setting.env === 'production';
     }
 
-    public log(log:any) {
+    private echo(logType:string, location:string, log:any) {
         if (this.isProduction) {
             // todo what to do ???
         } else {
-            console.log(log);
+            console[logType](location, log);
         }
     }
 
-    public warn(log:any) {
-        if (this.isProduction) {
-            // todo what to do ???
-        } else {
-            console.warn(log);
-        }
+    public log(location:string, log:any) {
+        this.echo(LogService.LogType.Log, location, log);
     }
 
-    public info(log:any) {
-        if (this.isProduction) {
-            // todo what to do ???
-        } else {
-            console.info(log);
-        }
+    public warn(location:string, warning:any) {
+        this.echo(LogService.LogType.Warn, location, warning);
     }
 
-    public error(log:any) {
-        if (this.isProduction) {
-            // todo what to do ???
-        } else {
-            console.error(log);
-        }
+    public info(location:string, information:any) {
+        this.echo(LogService.LogType.Info, location, information);
+    }
+
+    public error(location:string, error:any) {
+        this.echo(LogService.LogType.Error, location, error);
     }
 
     public static getInstance():LogService {
