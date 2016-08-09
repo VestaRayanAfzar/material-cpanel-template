@@ -72,6 +72,16 @@ export function router($stateProvider:IStateProvider, $locationProvider:ILocatio
             }
         }
     });
+    $stateProvider.state('about', {
+        url: '/about',
+        views: {
+            'master': {
+                templateUrl: 'tpl/about.html',
+                controller: 'aboutController',
+                controllerAs: 'vm'
+            }
+        }
+    });
     ///<vesta:ngRouter/>
 }
 

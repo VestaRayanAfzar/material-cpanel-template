@@ -2,7 +2,7 @@ import {BaseController} from "./BaseController";
 import {AuthService} from "../service/AuthService";
 
 export class HomeController extends BaseController {
-    public date:number;
+    public date: number;
     public static $inject = [];
 
     constructor() {

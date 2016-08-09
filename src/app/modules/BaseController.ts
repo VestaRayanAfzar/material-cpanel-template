@@ -28,8 +28,8 @@ export abstract class BaseController {
             filter: '',
             order: '',
             rowsPerPage: [10, 20, 50],
-            limit: 10,
-            page: 1,
+            limit: 50,
+            page: 0,
             total: 0,
             label: {text: 'Records', of: 'of'},
             loadMore: loadMore

@@ -8,37 +8,27 @@ import IDialogOptions = angular.material.IDialogOptions;
 
 
 export class UserController extends BaseController {
-    private user:User;
-    private usersList:ExtArray<IUser> = new ExtArray<IUser>();
-    private selectedUsersList:Array<number> = [];
-    private dtOption:any;
-    private currentPage:number = 1;
-    private busy:boolean = false;
+    private user: User;
+    private usersList: ExtArray<IUser> = new ExtArray<IUser>();
+    private selectedUsersList: Array<number> = [];
+    private dtOption: any;
+    private currentPage: number = 1;
+    private busy: boolean = false;
     public static $inject = ['$mdDialog'];
 
-    constructor(private $mdDialog:IDialogService) {
+    constructor(private $mdDialog: IDialogService) {
         super();
-        this.dtOption = {
-            showFilter: false,
-            title: 'List of users',
-            filter: '',
-            order: 'id',
-            rowsPerPage: [10, 20, 50],
-            limit: 10,
-            page: 1,
-            total: 0,
-            label: {text: 'Records', of: 'of'},
-            loadMore: this.loadMore.bind(this)
-        };
+        this.dtOption = this.getDataTableOptions('List of users', this.loadMore.bind(this));
         this.apiService.get<IQueryRequest<IUser>, IQueryResult<IUser>>('acl/user')
             .then(result=> {
                 if (result.error) return this.notificationService.toast(result.error.message);
                 this.usersList.set(result.items);
+                this.usersList.removeByProperty('username', 'root');
                 this.dtOption.total = result.total;
             })
     }
 
-    public loadMore(page:number) {
+    public loadMore(page: number) {
         if (this.busy || page <= this.currentPage) return;
         this.busy = true;
         this.apiService.get<IQueryRequest<IUser>, IQueryResult<IUser>>('acl/user', {
@@ -55,7 +45,7 @@ export class UserController extends BaseController {
             })
     }
 
-    public addUser(event:MouseEvent) {
+    public addUser(event: MouseEvent) {
         this.$mdDialog.show(<IDialogOptions>{
             controller: 'userAddController',
             controllerAs: 'vm',
@@ -68,7 +58,7 @@ export class UserController extends BaseController {
         }).catch(err=> err && this.notificationService.toast(err.message))
     }
 
-    public editUser(event:MouseEvent, id:number) {
+    public editUser(event: MouseEvent, id: number) {
         this.$mdDialog.show(<IDialogOptions>{
             controller: 'userEditController',
             controllerAs: 'vm',
@@ -78,13 +68,13 @@ export class UserController extends BaseController {
             locals: {
                 id: id
             }
-        }).then((user:IUser) => {
+        }).then((user: IUser) => {
             this.usersList[this.usersList.indexOfByProperty('id', user.id)] = user;
             this.notificationService.toast('user has been updated successfully');
         }).catch(err=> err && this.notificationService.toast(err.message))
     }
 
-    public delUser(event:MouseEvent) {
+    public delUser(event: MouseEvent) {
         var confirm = this.$mdDialog.confirm()
             .parent(angular.element(document.body))
             .title('Delete confirmation')

@@ -8,21 +8,21 @@ import IDialogService = angular.material.IDialogService;
 import IDialogOptions = angular.material.IDialogOptions;
 
 export interface IFormPermission {
-    resource:string;
-    actions:Array<{id:number,name:string}>;
+    resource: string;
+    actions: Array<{id: number,name: string}>;
 }
 
 export class RoleController extends BaseController {
-    private role:Role;
-    public rolesList:ExtArray<IRole> = new ExtArray<IRole>();
-    public selectedRolesList:Array<number> = [];
-    private dtOption:any;
-    private currentPage:number = 1;
-    private busy:boolean = false;
-    public permissions:ExtArray<IFormPermission> = new ExtArray();
+    private role: Role;
+    public rolesList: ExtArray<IRole> = new ExtArray<IRole>();
+    public selectedRolesList: Array<number> = [];
+    private dtOption: any;
+    private currentPage: number = 1;
+    private busy: boolean = false;
+    public permissions: ExtArray<IFormPermission> = new ExtArray();
     public static $inject = ['$mdDialog'];
 
-    constructor(private $mdDialog:IDialogService) {
+    constructor(private $mdDialog: IDialogService) {
         super();
         this.dtOption = this.getDataTableOptions('List of roles');
         this.getAllPermissions();
@@ -33,7 +33,7 @@ export class RoleController extends BaseController {
         this.apiService.get<IQueryRequest<IRole>, IQueryResult<IRole>>('role', {limit: 50})
             .then(result=> {
                 this.rolesList.set(result.items);
-                // this.rolesList.removeByProperty('name', 'admin');
+                this.rolesList.removeByProperty('name', 'admin');
                 this.dtOption.total = result.total;
             })
             .catch(reason=> this.notificationService.toast(reason.error.message))
@@ -45,8 +45,8 @@ export class RoleController extends BaseController {
                 if (result.error) {
                     return this.notificationService.toast(result.error.message);
                 }
-                for (var i = 0, il = result.items.length; i < il; ++i) {
-                    var p = result.items[i];
+                for (let i = 0, il = result.items.length; i < il; ++i) {
+                    let p: IPermission = result.items[i];
                     if (this.permissions.indexOfByProperty('resource', p.resource) < 0) {
                         this.permissions.push({resource: p.resource, actions: []});
                     }
@@ -58,7 +58,7 @@ export class RoleController extends BaseController {
             })
     }
 
-    public loadMore(page:number) {
+    public loadMore(page: number) {
         if (this.busy || page <= this.currentPage) return;
         this.busy = true;
         this.apiService.get<IQueryRequest<IRole>, IQueryResult<IRole>>('role', {
@@ -67,7 +67,7 @@ export class RoleController extends BaseController {
         })
             .then(result=> {
                 if (result.error) return this.notificationService.toast(result.error.message);
-                for (var i = 0; i < result.items.length; i++) {
+                for (let i = 0; i < result.items.length; i++) {
                     this.rolesList.push(result.items[i]);
                 }
                 this.dtOption.total = result.total;
@@ -75,7 +75,7 @@ export class RoleController extends BaseController {
             })
     }
 
-    public addRole(event:MouseEvent) {
+    public addRole(event: MouseEvent) {
         this.$mdDialog.show(<IDialogOptions>{
             controller: 'roleAddController',
             controllerAs: 'vm',
@@ -92,7 +92,7 @@ export class RoleController extends BaseController {
             })
     }
 
-    public editRole(event:MouseEvent, id:number) {
+    public editRole(event: MouseEvent, id: number) {
         this.$mdDialog.show(<IDialogOptions>{
             controller: 'roleEditController',
             controllerAs: 'vm',
@@ -104,14 +104,14 @@ export class RoleController extends BaseController {
                 permissions: this.permissions
             }
         })
-            .then((role:IRole) => {
+            .then((role: IRole) => {
                 this.rolesList[this.rolesList.indexOfByProperty('id', role.id)] = role;
                 this.notificationService.toast('role has been updated successfully');
             })
     }
 
-    public delRole(event:MouseEvent) {
-        var confirm = this.$mdDialog.confirm()
+    public delRole(event: MouseEvent) {
+        let confirm = this.$mdDialog.confirm()
             .parent(angular.element(document.body))
             .title('Delete confirmation')
             .textContent('Are you sure about deleting the select role')
