@@ -108,9 +108,12 @@ export class AuthService {
      */
     public isAllowed(resource:string, action:string):boolean {
         var userPermissions = this.permissions;
-        var userActions = userPermissions[resource] || userPermissions['*'];
-        if (!userActions) return AuthService.defaultPolicy == AclPolicy.Allow;
-        return userActions && (userActions.indexOf('*') >= 0 || userActions.indexOf(action) >= 0);
+        var userActions = userPermissions[resource];
+        if ((userActions && (userActions.indexOf('*') >= 0 || userActions.indexOf(action) >= 0)) ||
+            (userPermissions['*'] && (userPermissions['*'].indexOf('*') >= 0 || userPermissions['*'].indexOf(action) >= 0 ))){
+            return true
+        }
+        return AuthService.defaultPolicy == AclPolicy.Allow;
     }
 
     /**
