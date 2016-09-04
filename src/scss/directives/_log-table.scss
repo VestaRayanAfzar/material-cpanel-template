@@ -1,0 +1,27 @@
+.log-table {
+    form {
+        display: block;
+        padding: 10px;
+    }
+    table {
+        width: 90%;
+        margin: 10px auto;
+        border: 1px solid red;
+        td {
+            padding: 7px 5px;
+            border: 1px solid $borderColor;
+        }
+    }
+    .log-debug, .log-info, .log-error {
+        //border: 1px solid $borderColor;
+        padding: 5px;
+    }
+
+    .log-debug {
+        color: $info;
+    }
+
+    .log-error {
+        color: $error;
+    }
+}
