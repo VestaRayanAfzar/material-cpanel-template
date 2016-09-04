@@ -41,6 +41,8 @@ import {AclController} from "../modules/acl/AclController";
 import {UserAddController} from "../modules/acl/user/UserAddController";
 import {UserEditController} from "../modules/acl/user/UserEditController";
 import {UserController} from "../modules/acl/user/UserController";
+import {LogController} from "../modules/LogController";
+import {logTable} from "../directive/logTable";
 ///<vesta:import/>
 
 interface IExporter {
@@ -87,6 +89,7 @@ export const exporter:IExporter = {
         menuTrigger: menuTrigger,
         appMenu: appMenu,
         carousel: carousel,
+        logTable: logTable,
         ///<vesta:ngDirective/>
     },
     controller: {
@@ -104,6 +107,7 @@ export const exporter:IExporter = {
         userAddController: UserAddController,
         userEditController: UserEditController,
         userController: UserController,
+        logController: LogController,
         ///<vesta:ngController/>
     }
 };

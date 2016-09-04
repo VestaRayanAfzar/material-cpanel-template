@@ -72,6 +72,16 @@ export function router($stateProvider:IStateProvider, $locationProvider:ILocatio
             }
         }
     });
+    $stateProvider.state('log', {
+        url: '/log',
+        views: {
+            'master': {
+                templateUrl: 'tpl/log.html',
+                controller: 'logController',
+                controllerAs: 'vm'
+            }
+        }
+    });
     $stateProvider.state('about', {
         url: '/about',
         views: {
@@ -84,5 +94,3 @@ export function router($stateProvider:IStateProvider, $locationProvider:ILocatio
     });
     ///<vesta:ngRouter/>
 }
-
-

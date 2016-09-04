@@ -24,10 +24,12 @@
 @import "directives/menu-trigger";
 @import "directives/round-image";
 @import "directives/sidenav";
+@import 'directives/log-table';
 ///<vesta:scssDirective/>
 @import "pages/root";
 @import "pages/common";
 @import "pages/home";
 @import "pages/about";
 @import "pages/login";
+@import 'pages/log';
 ///<vesta:scssPage/>
