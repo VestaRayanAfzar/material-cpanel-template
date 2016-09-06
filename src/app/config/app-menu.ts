@@ -19,3 +19,4 @@ AppMenu.push({
         {title: 'User', state: 'acl.user'}]
 });
 AppMenu.push({title: 'System Log', state: 'log'});
+AppMenu.push({title: 'Configuration', state: 'appConfig'});

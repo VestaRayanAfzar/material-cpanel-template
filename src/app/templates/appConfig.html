@@ -1,0 +1,30 @@
+<div class="page" id="appConfig-page">
+    <h1>Application Configuration</h1>
+    <form name="vm.appConfigForm" ng-submit="vm.updateAppConfig()" novalidate>
+
+
+        <md-input-container class="md-block">
+            <label for="level">level</label>
+            <md-select name="level" id="level" ng-model="vm.appConfig.logLevel" required ng-disabled="!vm.acl.update">
+                <md-option ng-value="0">None</md-option>
+                <md-option ng-value="1">Error</md-option>
+                <md-option ng-value="2">Warning</md-option>
+                <md-option ng-value="3">Information</md-option>
+                <md-option ng-value="4">Debug</md-option>
+                <div ng-if="vm.appConfigForm.$dirty" ng-messages="vm.appConfigForm.level.$error">
+                    <div ng-message="required">This field is required</div>
+                    <div ng-message="enum">Value must be one of the list items</div>
+                </div>
+            </md-select>
+            <div ng-if="vm.appConfigForm.$dirty" ng-messages="vm.appConfigForm.level.$error">
+                <div ng-message="required">This field is required</div>
+                <div ng-message="enum">Value must be one of the list items</div>
+            </div>
+        </md-input-container>
+
+        <div>
+            <md-button type="submit" class="md-primary md-raised">Save</md-button>
+            <md-button type="button" class="md-primary" ng-click="vm.closeFormModal()">Cancel</md-button>
+        </div>
+    </form>
+</div>

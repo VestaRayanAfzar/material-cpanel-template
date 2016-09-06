@@ -2,10 +2,10 @@ import {ILocationProvider} from "angular";
 import {IStateProvider, IUrlRouterProvider} from "angular-ui-router";
 
 export interface IRouteFunction {
-    ($stateProvider:IStateProvider, $locationProvider:ILocationProvider, $urlRouterProvider:IUrlRouterProvider):void;
+    ($stateProvider: IStateProvider, $locationProvider: ILocationProvider, $urlRouterProvider: IUrlRouterProvider): void;
 }
 
-export function router($stateProvider:IStateProvider, $locationProvider:ILocationProvider, $urlRouterProvider:IUrlRouterProvider) {
+export function router($stateProvider: IStateProvider, $locationProvider: ILocationProvider, $urlRouterProvider: IUrlRouterProvider) {
     $locationProvider.html5Mode(true);
     // $locationProvider.hashPrefix('!');
     $urlRouterProvider.otherwise('/');
@@ -78,6 +78,16 @@ export function router($stateProvider:IStateProvider, $locationProvider:ILocatio
             'master': {
                 templateUrl: 'tpl/log.html',
                 controller: 'logController',
+                controllerAs: 'vm'
+            }
+        }
+    });
+    $stateProvider.state('appConfig', {
+        url: '/appConfig',
+        views: {
+            'master': {
+                templateUrl: 'tpl/appConfig.html',
+                controller: 'appConfigController',
                 controllerAs: 'vm'
             }
         }

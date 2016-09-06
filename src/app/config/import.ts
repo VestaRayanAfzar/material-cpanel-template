@@ -43,16 +43,17 @@ import {UserEditController} from "../modules/acl/user/UserEditController";
 import {UserController} from "../modules/acl/user/UserController";
 import {LogController} from "../modules/LogController";
 import {logTable} from "../directive/logTable";
+import {AppConfigController} from "../modules/AppConfigController";
 ///<vesta:import/>
 
 interface IExporter {
-    controller:any;
-    service:any;
-    filter:any;
-    directive:any;
+    controller: any;
+    service: any;
+    filter: any;
+    directive: any;
 }
 
-export const exporter:IExporter = {
+export const exporter: IExporter = {
     service: {
         i18nService: I18nService,
         translateService: TranslateService,
@@ -108,6 +109,7 @@ export const exporter:IExporter = {
         userEditController: UserEditController,
         userController: UserController,
         logController: LogController,
+        appConfigController: AppConfigController,
         ///<vesta:ngController/>
     }
 };

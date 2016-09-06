@@ -78,9 +78,12 @@ export class LogTableController {
 
     private renderError(data) {
         let html = '<div class="log-error"><h3>Error</h3>';
+        if (data.error) {
+            data = data.error;
+        }
         if (data.message) {
             html += `${data.message}`;
-            if (data.stack) html += `<br/>${data.stack}`;
+            if (data.stack) html += `<br/>${JSON.stringify(data.stack)}`;
         } else {
             html += `${data}<br/>`;
         }
