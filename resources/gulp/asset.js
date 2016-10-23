@@ -37,9 +37,9 @@ module.exports = function (dir, setting) {
             findInFileAndReplace(dir.buildWeb + '/index.html', 'manifest="offline.manifest"', '');
         }
         var stream = gulp.src(tplTempDirectory + '/**/*.html')
-         .pipe(inline('build/app/html/index.html', {
+            .pipe(inline('build/app/html/index.html', {
                 base: 'build/tmp',
-         method: 'append'
+                method: 'append'
             }));
         if (setting.production) {
             stream = minifyHtml(stream).on('error', setting.error);

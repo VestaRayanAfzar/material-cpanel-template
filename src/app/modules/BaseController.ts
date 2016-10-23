@@ -36,12 +36,12 @@ export abstract class BaseController {
         };
     }
 
-    protected upload<T>(edge:string, images:IFileKeyValue):IPromise<IUpsertResult<T> | void> {
+    protected upload<T>(edge:string, files:IFileKeyValue):IPromise<IUpsertResult<T> | void> {
         let notificationService = NotificationService.getInstance();
-        return ApiService.getInstance().upload<any, IUpsertResult<T>>(edge, images)
+        return ApiService.getInstance().upload<any, IUpsertResult<T>>(edge, files)
             .then(result=> {
                 if (result.error) throw result.error;
-                notificationService.toast(`Image has been uploaded successfully`);
+                notificationService.toast(`Files has been uploaded successfully`);
                 return result;
             })
             .catch(err=> notificationService.toast(err.message));
