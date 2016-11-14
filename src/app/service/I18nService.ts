@@ -1,7 +1,7 @@
 import {IClientAppSetting} from "../config/setting";
 import {ILocale} from "vesta-i18n/ILocale";
 import {I18N} from "vesta-i18n/I18N";
-import {Dictionary, IVocabs} from "vesta-i18n/Dictionary";
+import {Dictionary} from "vesta-i18n/Dictionary";
 import {faIR} from "vesta-locale-fa-ir/fa-IR";
 import {enUS} from "vesta-locale-en-us/en-US";
 import {ApiService} from "./ApiService";
@@ -10,11 +10,11 @@ import {PersianDate} from "vesta-datetime-persian/PersianDate";
 import {GregorianDate} from "vesta-datetime-gregorian/GregorianDate";
 
 export class I18nService {
-    private i18nLocale:ILocale;
-    private dictionary:Dictionary;
+    private i18nLocale: ILocale;
+    private dictionary: Dictionary;
     public static $inject = ['Setting', 'apiService'];
 
-    constructor(private Setting:IClientAppSetting, private apiService:ApiService) {
+    constructor(private Setting: IClientAppSetting, private apiService: ApiService) {
         this.initLocales();
     }
 
@@ -33,12 +33,12 @@ export class I18nService {
         //     .then(vocabs=>this.dictionary.inject(vocabs));
     }
 
-    public get(property?:string) {
+    public get(property?: string) {
         if (!property) return this.i18nLocale;
         return this.i18nLocale[property];
     }
 
-    public getDictionary():Dictionary {
+    public getDictionary(): Dictionary {
         return this.dictionary;
     }
 }

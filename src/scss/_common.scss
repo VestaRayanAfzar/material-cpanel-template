@@ -5,10 +5,12 @@
 @import "fonts/material-design";
 ///<vesta:scssFont/>
 @import "lib/reset/html5doctor/v1.6.1";
-@import "lib/angular-material/1.0.7/_angular-material";
+@import "lib/angular-material/1.0.7/angular-material";
 @import "lib/md-data-table/0.10.9/md-data-table";
 ///<vesta:scssLibrary/>
+@import "elements/override";
 @import "elements/global";
+//@import "elements/scrollbar";
 @import "elements/animation";
 ///<vesta:scssElement/>
 @import "components/frame";
@@ -24,10 +26,21 @@
 @import "directives/menu-trigger";
 @import "directives/round-image";
 @import "directives/sidenav";
+@import "directives/theme-select";
+@import "directives/breadcrumb";
+@import "directives/pagination";
+@import "directives/date-time";
+@import 'directives/data-table';
 ///<vesta:scssDirective/>
 @import "pages/root";
 @import "pages/common";
 @import "pages/home";
 @import "pages/about";
 @import "pages/login";
+@import 'pages/user';
+@import 'pages/acc';
+@import 'pages/user';
+@import 'pages/role';
+@import 'pages/roleGroup';
+@import 'pages/role';
 ///<vesta:scssPage/>

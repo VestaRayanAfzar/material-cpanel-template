@@ -15,7 +15,7 @@ function onScriptsReady() {
     if (!window['angular']) return false;
     var clientApp = new ClientApp(setting, router);
 
-    var sections = ['controller', 'service', 'filter', 'directive', 'component'];
+    var sections = ['controller', 'service', 'filter', 'directive'];
     for (var i = sections.length; i--;) {
         var method = sections[i];
         for (var module in exporter[method]) {

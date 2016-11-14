@@ -1,14 +1,30 @@
+$triggerHeight: ceil($headerHeight/2) !default;
+
 .main-header {
-    background: transparentize($dark, .05);
-    $logoOffset: 10px;
+    display: flex;
+    background: transparentize($black, 0.5);
+    box-shadow: $boxShadow;
+    .date-time {
+        margin-#{$float}: $triggerHeight + floor($triggerHeight / 2);
+    }
+    .md-button {
+        background: transparent;
+        color: $white;
+        display: inline-block;
+        font-size: $fontSizeSmall;
+        md-icon {
+            color: $white;
+        }
+    }
     .logo-wrapper {
-        position: absolute;
-        top: $logoOffset;
-        left: floor($logoOffset / 2);
-        height: $headerHeight - (2 * $logoOffset);
+        margin-left: 5px;
+        height: $headerHeight - 20px;
         img {
             height: 100%;
             width: auto;
         }
+    }
+    .header-item {
+        margin-top: 7px;
     }
 }

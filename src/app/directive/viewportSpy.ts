@@ -22,11 +22,11 @@ export class ViewportSpyController {
             isDevice: false,
             isSmallOrMedium: false
         };
-        var scrollSpyRemover = this.spyOnScroll();
+        // var scrollSpyRemover = this.spyOnScroll();
         var resizeSpyRemover = this.spyOnResize();
         this.detectPlatform();
         this.$scope.$on('$destroy', ()=> {
-            scrollSpyRemover();
+            // scrollSpyRemover();
             resizeSpyRemover();
         });
     }

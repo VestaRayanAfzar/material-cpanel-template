@@ -37,9 +37,9 @@ module.exports = function (dir, setting) {
             findInFileAndReplace(dir.buildWeb + '/index.html', 'manifest="offline.manifest"', '');
         }
         var stream = gulp.src(tplTempDirectory + '/**/*.html')
-         .pipe(inline('build/app/html/index.html', {
+            .pipe(inline('build/app/html/index.html', {
                 base: 'build/tmp',
-         method: 'append'
+                method: 'append'
             }));
         if (setting.production) {
             stream = minifyHtml(stream).on('error', setting.error);
@@ -55,8 +55,8 @@ module.exports = function (dir, setting) {
             dir.npm + '/angular-aria/angular-aria.js',
             dir.npm + '/angular-messages/angular-messages.js',
             dir.npm + '/angular-ui-router/release/angular-ui-router.js',
-            dir.npm + '/angular-material/angular-material.js',
-            dir.npm + '/angular-material-data-table/dist/md-data-table.js'
+            dir.npm + '/angular-material/angular-material.js'
+            //dir.npm + '/angular-material-data-table/dist/md-data-table.js'
         ];
         var stream = gulp.src(libs).pipe(concat('lib.js'));
         if (setting.production) {

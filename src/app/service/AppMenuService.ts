@@ -2,6 +2,7 @@ import {IQService, IPromise, IDeferred} from "angular";
 import {IMenuItem} from "../config/app-menu";
 import {AuthService} from "./AuthService";
 import {AppMenuController} from "../directive/appMenu";
+import {TranslateService} from "./TranslateService";
 
 export interface IMenuWithController {
     ctrl: AppMenuController;
@@ -20,9 +21,9 @@ export class AppMenuService {
     private static menuItems: {[componentId: string]: Array<IMenuItem>} = {};
     private static menus: IMenuStorage = {};
     private deferredRequests: IDeferredQ = {};
-    public static $inject = ['authService', '$q'];
+    public static $inject = ['authService', '$q', 'translateService'];
 
-    constructor(private authService: AuthService, private $q: IQService) {
+    constructor(private authService: AuthService, private $q: IQService, private translateService: TranslateService) {
 
     }
 
@@ -36,7 +37,7 @@ export class AppMenuService {
                     let childResult = this.extractMenu(menuItem.children);
                     if (childResult.length) {
                         result.push({
-                            title: menuItem.title,
+                            title: this.translateService.translate(menuItem.title),
                             isAbstract: menuItem.isAbstract,
                             url: menuItem.url,
                             state: state,

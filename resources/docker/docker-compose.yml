@@ -6,7 +6,7 @@ services:
     image: vesta/pm2
     restart: always
     ports:
-      - '8089:8088'
+      - '8088:8088'
     networks:
       - network
     volumes:

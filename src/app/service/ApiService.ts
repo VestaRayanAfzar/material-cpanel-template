@@ -36,10 +36,10 @@ export class ApiService {
             error = new Err();
         if (!response || !response.data) {
             error = new Err(Err.Code.NoDataConnection);
-        } else if (response.data && response.data.error) {
-            resError = response.data.error;
         } else if (response.error) {
             resError = response.error;
+        } else if (response.data) {
+            resError = response.data.error || response.data;
         }
         for (let key in resError) {
             if (resError.hasOwnProperty(key)) {
@@ -57,7 +57,6 @@ export class ApiService {
             if (!response || !response.data) return deferred.reject(new Err(Err.Code.NoDataConnection));
             if (response.data.error) throw response;
             this.extractToken(response);
-            // this.onAfterReceive<T>(response);
             deferred.resolve(response.data);
         }).catch(response=> {
             this.extractToken(response);
@@ -99,14 +98,14 @@ export class ApiService {
         let config = this.onBeforeSend(),
             urlData = data ? `?${window['param'](data)}` : '';
         if (config.error) return <ICancellablePromise<U>>this.$q.reject(config.error);
-        return this.requestHandler<U>(this.$http.get(this.endPoint + edge + '?' + urlData.substr(1), config.reqConfig), config.canceler);
+        return this.requestHandler<U>(this.$http.get(`${this.endPoint}${edge}${urlData}`, config.reqConfig), config.canceler);
     }
 
     public post<T, U>(edge: string, data?: T): ICancellablePromise<U> {
         let config = this.onBeforeSend();
         if (config.error) return <ICancellablePromise<U>>this.$q.reject(config.error);
         data = data || <T>{};
-        return this.requestHandler<U>(this.$http.post(this.endPoint + edge, data, config.reqConfig), config.canceler);
+        return this.requestHandler<U>(this.$http.post(`${this.endPoint}${edge}`, data, config.reqConfig), config.canceler);
     }
 
     public upload<T, U>(edge: string, files: IFileKeyValue, data?: T): ICancellablePromise<U> {
@@ -129,21 +128,21 @@ export class ApiService {
         }
         config.reqConfig.transformRequest = angular.identity;
         config.reqConfig.headers['content-type'] = undefined;
-        return this.requestHandler<U>(this.$http.post(this.endPoint + edge, fd, config.reqConfig), config.canceler);
+        return this.requestHandler<U>(this.$http.post(`${this.endPoint}${edge}`, fd, config.reqConfig), config.canceler);
     }
 
     public put<T, U>(edge: string, data?: T): ICancellablePromise<U> {
         let config = this.onBeforeSend();
         if (config.error) return <ICancellablePromise<U>>this.$q.reject(config.error);
         data = data || <T>{};
-        return this.requestHandler<U>(this.$http.put(this.endPoint + edge, data, config.reqConfig), config.canceler);
+        return this.requestHandler<U>(this.$http.put(`${this.endPoint}${edge}`, data, config.reqConfig), config.canceler);
     }
 
     public delete<T, U>(edge: string, data?: T): ICancellablePromise<U> {
         let config = this.onBeforeSend(),
             urlData = data ? `?${window['param'](data)}` : '';
         if (config.error) return <ICancellablePromise<U>>this.$q.reject(config.error);
-        return this.requestHandler<U>(this.$http.delete(`${this.endPoint}${edge}?${urlData}`, config.reqConfig), config.canceler);
+        return this.requestHandler<U>(this.$http.delete(`${this.endPoint}${edge}${urlData}`, config.reqConfig), config.canceler);
     }
 
     public static getInstance(): ApiService {

@@ -1,14 +1,15 @@
-.dt-wrapper {
-    width: 80%;
-    margin: 10px auto;
-    background: $light;
-    border-radius: $button-border-radius;
+.page {
+    padding-top: 10px;
+    > h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: $light;
+    }
 }
 
 .form-wrapper {
     width: 80%;
     margin: auto;
-    //overflow: hidden;
     @include mediaQuery(0, $layoutSmallMax) {
         width: 100%;
         height: 100%;
@@ -18,7 +19,7 @@
     form {
         min-width: $layoutSmallMin;
         md-dialog-content {
-            padding: 10px;
+            padding-bottom: 30px;
             overflow-x: hidden;
         }
         md-table-pagination {
@@ -57,4 +58,68 @@
 
 .non-modal-form {
     padding-top: $headerHeight + 10;
+}
+
+.detail-2-col-wrapper {
+    h4 {
+        display: inline-block;
+        background: transparentize(#939598, 0.8);
+        margin-bottom: 0;
+        padding: 6px 15px;
+        font-weight: 500;
+        color: $darkGray;
+        position: relative;
+        border-radius: 100px;
+    }
+    > div {
+        &:first-child {
+            background: transparentize($white, 0.5);
+            margin-top: 5px;
+            line-height: 0;
+            direction: $opposite-direction;
+            img:first-child {
+                padding: 10px;
+                background: transparentize($white, 0.6);
+            }
+            img {
+                max-width: 250px;
+            }
+            //border: 1px solid red;
+            //img {
+            //    width: 100%;
+            //}
+        }
+        &:last-child {
+            //border: 1px solid blue;
+        }
+        md-toolbar {
+            md-button {
+                outline: 0;
+            }
+        }
+    }
+    .division-title {
+        background: $white;
+        padding: 5px;
+        height: 40px;
+        md-icon {
+            color: $darkGray;
+        }
+    }
+}
+
+.autocomplete-icon {
+    width: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+.form-actions-wrapper, .actions-bar {
+    .md-button {
+        background: transparentize(#1e1e1e, 0.8);
+    }
+    .md-primary {
+        background: transparentize(#1e1e1e, 0.3) !important;
+    }
 }

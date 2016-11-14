@@ -229,3 +229,15 @@ $dpBgColor: transparentize($dark, .25);
         }
     }
 }
+
+.dp-trigger {
+    //border: 1px solid red;
+    #{$opposite-float}: 5px;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+}
+
+input[date-input] {
+    width: calc(100% - 50px);
+}

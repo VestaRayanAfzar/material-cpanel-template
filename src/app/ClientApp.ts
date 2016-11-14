@@ -4,7 +4,8 @@ import {
     IAngularEvent,
     IAngularBootstrapConfig,
     ILocationProvider,
-    IHttpProvider
+    IHttpProvider,
+    ICompileProvider
 } from "angular";
 import {IState, IStateService, IStateProvider, IUrlRouterProvider} from "angular-ui-router";
 import {IClientAppSetting} from "./config/setting";
@@ -22,21 +23,22 @@ import {RootController} from "./modules/RootController";
 import {AppMenuService} from "./service/AppMenuService";
 import {AppMenu} from "./config/app-menu";
 import {Err} from "vesta-util/Err";
+import {BreadcrumbController} from "./directive/breadcrumb";
 
 export interface IExtRootScopeService extends IRootScopeService {
-    rvm:RootController;
-    vp:IViewport,
-    locale:ILocale;
-    pageTitle:string;
-    isDeviceOrSmall:boolean;
-    user:IUser;
+    rvm: RootController;
+    vp: IViewport,
+    locale: ILocale;
+    pageTitle: string;
+    isDeviceOrSmall: boolean;
+    user: IUser;
 }
 
 export class ClientApp {
-    public static Setting:IClientAppSetting;
-    public module:IModule;
+    public static Setting: IClientAppSetting;
+    public module: IModule;
 
-    constructor(private setting:IClientAppSetting, router:IRouteFunction) {
+    constructor(private setting: IClientAppSetting, router: IRouteFunction) {
         ClientApp.Setting = setting;
         this.init(router);
     }
@@ -44,14 +46,16 @@ export class ClientApp {
     /**
      * This method is equivalent to angular.module.config & angular.module.run
      */
-    private init(router:IRouteFunction) {
-        this.module = angular.module(this.setting.name, ['ngMessages', 'ui.router', 'ngMaterial', 'md.data.table']);
+    private init(router: IRouteFunction) {
+        this.module = angular.module(this.setting.name, ['ngMessages', 'ui.router', 'ngMaterial']);
         this.module.constant('Setting', this.setting);
         // CONFIG
         AppMenuService.setMenuItems('main-menu', AppMenu);
+        BreadcrumbController.setAppStates(AppMenu);
         AuthService.setDefaultPolicy(AclPolicy.Deny);
-        this.module.config(['$stateProvider', '$locationProvider', '$urlRouterProvider', '$httpProvider',
-            function ($stateProvider:IStateProvider, $locationProvider:ILocationProvider, $urlRouterProvider:IUrlRouterProvider, $httpProvider:IHttpProvider) {
+        this.module.config(['$stateProvider', '$locationProvider', '$urlRouterProvider', '$httpProvider', '$compileProvider',
+            function ($stateProvider: IStateProvider, $locationProvider: ILocationProvider, $urlRouterProvider: IUrlRouterProvider, $httpProvider: IHttpProvider, $compileProvider: ICompileProvider) {
+                $compileProvider.debugInfoEnabled(ClientApp.Setting.env != 'production');
                 $httpProvider.useApplyAsync(true);
                 router($stateProvider, $locationProvider, $urlRouterProvider);
             }]);
@@ -60,11 +64,11 @@ export class ClientApp {
          * After this, these services can be used by their `getInstance` method. e.g AuthService.getInstance()
          * This action will cause the DI on class names to be much shorter => increasing the readability
          */
-        this.module.run(['apiService', 'authService', 'logService', 'formService', 'notificationService', 'metaTagsService', (apiService, authService, logService, formService, notificationService, metaTagsService)=> {
+        this.module.run(['apiService', 'authService', 'logService', 'formService', 'notificationService', 'metaTagsService', 'translateService', (apiService, authService, logService, formService, notificationService, metaTagsService, translateService)=> {
         }]);
         // RUN
         this.module.run(['$rootScope', '$state', 'networkService', 'i18nService', 'appCacheService',
-            ($rootScope:IExtRootScopeService, $state:IStateService, networkService:NetworkService, i18nService:I18nService, appCacheService:AppCacheService)=> {
+            ($rootScope: IExtRootScopeService, $state: IStateService, networkService: NetworkService, i18nService: I18nService, appCacheService: AppCacheService)=> {
                 $rootScope.locale = i18nService.get();
                 this.aclCheck($rootScope, $state);
                 this.connectionWatcher(networkService);
@@ -83,7 +87,7 @@ export class ClientApp {
      The /me (GET) edge is responsible to returns the authenticated user data in case the token is valid.
      In case there is no token or user is not authenticated the guest user will be returned.
      */
-    private checkAuthStatus($state:IStateService) {
+    private checkAuthStatus($state: IStateService) {
         let authService = AuthService.getInstance();
         ApiService.getInstance().get<IQueryRequest<IUser>, IQueryResult<IUser>>('me')
             .then(result=> {
@@ -100,9 +104,9 @@ export class ClientApp {
             })
     }
 
-    private aclCheck($rootScope:IExtRootScopeService, $state:IStateService) {
+    private aclCheck($rootScope: IExtRootScopeService, $state: IStateService) {
         let authService = AuthService.getInstance();
-        $rootScope.$on('$stateChangeStart', (event:IAngularEvent, toState:IState)=> {
+        $rootScope.$on('$stateChangeStart', (event: IAngularEvent, toState: IState)=> {
             if (!authService.hasAccessToState(toState.name)) {
                 event.preventDefault();
                 console.log(`Prevent from going to forbidden state "${toState.name}"`);
@@ -111,20 +115,19 @@ export class ClientApp {
         });
     }
 
-    private connectionWatcher(networkService:NetworkService) {
+    private connectionWatcher(networkService: NetworkService) {
         window.addEventListener('online', ()=> changeStatus(true), false);
         window.addEventListener('offline', ()=> changeStatus(false), false);
         changeStatus(networkService.isOnline());
-        function changeStatus(isOnline:boolean) {
+        function changeStatus(isOnline: boolean) {
             document.body.classList[isOnline ? 'remove' : 'add']('net-offline');
         }
     }
 
     public bootstrap() {
         var isProduction = this.setting.env == 'production';
-        var bsConfig:IAngularBootstrapConfig = {
-            strictDi: isProduction,
-            debugInfoEnabled: !isProduction
+        var bsConfig: IAngularBootstrapConfig = {
+            strictDi: isProduction
         };
         angular.bootstrap(document, [this.setting.name], bsConfig);
     }
