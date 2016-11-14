@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <meta name="viewport"
+          content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
     <meta name="robots" content="noindex, nofollow">
     <title ng-bind="pageTitle">Vesta</title>
     <base href="/"/>
@@ -13,23 +14,40 @@
 </head>
 
 <body viewport-spy>
-<div ng-controller="rootController as rvm" class="pane" id="root-page">
+<div ng-controller="rootController as rvm" id="root-page">
     <header class="main-header">
         <menu-trigger component-id="'main-sidenav'"></menu-trigger>
+        <date-time></date-time>
+        <div flex></div>
+        <theme-select selected="01"></theme-select>
+        <div ng-if="!rvm.authService.isGuest()" ng-cloak class="header-item">
+            <a class="md-button md-button-icon" ng-click="rvm.logout()">
+                <md-icon>power_settings_new</md-icon> {{'logout'|tr}}
+            </a>
+        </div>
+        <div ng-if="rvm.authService.isGuest()" ng-cloak class="header-item">
+            <a class="md-button md-button-icon" ui-sref="login">
+                <md-icon>exit_to_app</md-icon> {{'login'|tr}}
+            </a>
+        </div>
         <div class="logo-wrapper en">
             <a ui-sref="home"><img src="img/vesta-logo-white.png" alt="Vesta Logo"></a>
         </div>
     </header>
     <main class="main-content">
-        <div ui-view="master"></div>
+        <div id="content-wrapper">
+            <breadcrumb ng-show="!rvm.authService.isGuest()"></breadcrumb>
+            <div ui-view="master"></div>
+            <footer class="main-footer">
+                <p class="en">&copy; 2016, All rights reserved for
+                    <a href="https://vestarayanafzar.com" target="_blank">Vesta Rayan Afzar</a>
+                </p>
+            </footer>
+
+        </div>
         <sidenav component-id="'main-sidenav'" close-event="'$stateChangeSuccess'">
             <app-menu component-id="'main-menu'"></app-menu>
         </sidenav>
-        <footer class="main-footer">
-            <p class="en">&copy; 2016, All rights reserved for
-                <a href="https://vestarayanafzar.com" target="_blank">Vesta Rayan Afzar</a>
-            </p>
-        </footer>
     </main>
 </div>
 

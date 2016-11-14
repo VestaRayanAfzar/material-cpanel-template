@@ -1,21 +1,21 @@
 <div id="login-page" class="page">
     <form method="post" name="vm.userForm" ng-submit="vm.login()" novalidate>
-        <h1>Vesta Platform</h1>
+        <h1>{{'login_title'|tr}}</h1>
         <div class="form-els">
             <div>
                 <input type="text" name="username" ng-model="vm.user.username" id="username" required dir="ltr"
-                       placeholder="Username"/>
+                       placeholder="{{'username'|tr}}"/>
                 <md-icon>person</md-icon>
             </div>
             <div>
                 <input type="password" name="password" ng-model="vm.user.password" id="password" dir="ltr" minlength="4"
-                       required placeholder="Password">
+                       required placeholder="{{'password'|tr}}">
                 <md-icon>lock</md-icon>
             </div>
         </div>
 
         <div class="form-footer">
-            <md-button type="submit" class="md-primary md-raised">Login</md-button>
+            <md-button type="submit" class="md-primary md-raised">{{'login'|tr}}</md-button>
         </div>
     </form>
 </div>

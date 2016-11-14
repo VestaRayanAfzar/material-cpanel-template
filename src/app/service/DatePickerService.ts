@@ -4,34 +4,37 @@ import {IDateTime, DateTime} from "vesta-datetime/DateTime";
 import {DateTimeFactory} from "vesta-datetime/DateTimeFactory";
 
 export interface IDatePickerOptions {
-    attachedTo?:HTMLElement;
-    timestamp?:number;
-    clickToSelect?:boolean;
-    min?:number;
-    max?:number;
+    attachedTo?: HTMLElement;
+    timestamp?: number;
+    clickToSelect?: boolean;
+    min?: number;
+    max?: number;
+    minYear?: number;
+    maxYear?: number;
 }
 
 export class DatePickerService {
-    private dpOuterWrapper:HTMLDivElement;
-    private dpWrapper:HTMLDivElement;
-    private dpContent:HTMLDivElement;
-    private dpDateTable:HTMLTableElement;
-    private dpMonthSelect:HTMLDivElement;
-    private dpYearSelect:HTMLDivElement;
+    private dpOuterWrapper: HTMLDivElement;
+    private dpWrapper: HTMLDivElement;
+    private dpContent: HTMLDivElement;
+    private dpDateTable: HTMLTableElement;
+    private dpMonthSelect: HTMLDivElement;
+    private dpYearSelect: HTMLDivElement;
 
     private altMode = '';
     private isVisible = false;
     private selectedTimestamp = 0;
-    private pickerDate:DateTime;
-    private inputDate:DateTime;
-    private defer:IDeferred<number>;
-    private options:IDatePickerOptions;
-    private static defaultDateTime:IDateTime;
+    private pickerDate: DateTime;
+    private inputDate: DateTime;
+    private defer: IDeferred<number>;
+    private options: IDatePickerOptions;
+    private static defaultDateTime: IDateTime;
 
     public static $inject = ['$q', 'Setting'];
 
-    constructor(private $q:IQService, private Setting:IClientAppSetting) {
+    constructor(private $q: IQService, private Setting: IClientAppSetting) {
         this.pickerDate = DatePickerService.defaultDateTime ? new DatePickerService.defaultDateTime() : DateTimeFactory.create(this.Setting.locale);
+        this.options = {};
         this.init();
     }
 
@@ -39,11 +42,16 @@ export class DatePickerService {
         this.dpOuterWrapper = document.createElement('div');
         this.dpOuterWrapper.classList.add('dp-outer-wrapper');
         this.dpOuterWrapper.classList.add('dp-modal');
+        this.dpOuterWrapper.addEventListener('click', e=> {
+            if ((e.srcElement || <HTMLElement>e.target).classList.contains('dp-outer-wrapper')) {
+                this.toggleDatePicker();
+            }
+        }, false);
         document.querySelector('body').appendChild(this.dpOuterWrapper);
         this.dpOuterWrapper.innerHTML = this.getTemplate();
         this.dpWrapper = <HTMLDivElement>this.dpOuterWrapper.querySelector('.dp-wrapper');
         var actionBtns = this.dpWrapper.querySelectorAll('.dp-footer button'),
-            dpBody:HTMLDivElement = <HTMLDivElement>this.dpWrapper.querySelector('.dp-body');
+            dpBody: HTMLDivElement = <HTMLDivElement>this.dpWrapper.querySelector('.dp-body');
         this.dpContent = <HTMLDivElement>dpBody.querySelector('.dp-content');
         this.dpDateTable = <HTMLTableElement>dpBody.querySelector('table');
         this.dpMonthSelect = <HTMLDivElement>this.dpWrapper.querySelector('.dp-month-select');
@@ -66,7 +74,7 @@ export class DatePickerService {
         this.dpYearSelect.addEventListener('click', this.selectYear.bind(this), false);
         var lastScrollTop = 0,
             scrollTimer;
-        this.dpContent.addEventListener('scroll', function (event:Event) {
+        this.dpContent.addEventListener('scroll', function (event: Event) {
             if (this.altMode != 'year') return;
             clearTimeout(scrollTimer);
             scrollTimer = setTimeout(((downSide)=> {
@@ -85,8 +93,8 @@ export class DatePickerService {
         this.fillDateTable();
     }
 
-    private getWeekDaysNameRow():HTMLTableRowElement {
-        var tr:HTMLTableRowElement = document.createElement('tr'),
+    private getWeekDaysNameRow(): HTMLTableRowElement {
+        var tr: HTMLTableRowElement = document.createElement('tr'),
             weekDays = this.pickerDate.locale.weekDaysShort,
             html = '';
         this.dpWrapper.querySelector('.dp-curr-year').textContent = String(this.pickerDate.getFullYear());
@@ -104,8 +112,8 @@ export class DatePickerService {
         this.pickerDate.setDate(1);
         var firstWeekDayOfMonth = this.pickerDate.getDay(),
             monthDays = this.pickerDate.locale.daysInMonth[currentMonth],
-            tr:HTMLTableRowElement = document.createElement('tr'),
-            tds:string = '';
+            tr: HTMLTableRowElement = document.createElement('tr'),
+            tds: string = '';
         var thisYear = this.inputDate.getFullYear(),
             thisMonth = this.inputDate.getMonth(),
             thisDate = this.inputDate.getDate();
@@ -149,15 +157,15 @@ export class DatePickerService {
     }
 
     private setHeaderDate() {
-        var header:HTMLDivElement = <HTMLDivElement>this.dpWrapper.querySelector('.dp-header');
+        var header: HTMLDivElement = <HTMLDivElement>this.dpWrapper.querySelector('.dp-header');
         header.querySelector('.dp-day').textContent = this.inputDate.locale.weekDays[this.inputDate.getDay()];
         header.querySelector('.dp-date').textContent = String(this.inputDate.getDate());
         header.querySelector('.dp-month').textContent = this.inputDate.locale.monthNames[this.inputDate.getMonth()];
         header.querySelector('.dp-year').textContent = String(this.inputDate.getFullYear());
     }
 
-    private selectDay(event:MouseEvent) {
-        var srcElement = event.srcElement;
+    private selectDay(event: MouseEvent) {
+        var srcElement = event.srcElement || <HTMLElement>event.target;
         if (srcElement.tagName.toUpperCase() == 'SPAN') {
             srcElement = srcElement.parentElement;
         }
@@ -184,7 +192,7 @@ export class DatePickerService {
         this.renderDatePicker();
     }
 
-    private toggleAltMode(mode?:string) {
+    private toggleAltMode(mode?: string) {
         this.altMode = mode;
         switch (mode) {
             case 'month':
@@ -226,9 +234,9 @@ export class DatePickerService {
         this.toggleAltMode('month');
     }
 
-    private selectMonth(event:MouseEvent) {
+    private selectMonth(event: MouseEvent) {
         this.toggleAltMode();
-        var month = Number(event.srcElement.getAttribute('data-index'));
+        var month = Number((event.srcElement || <HTMLElement>event.target).getAttribute('data-index'));
         if (!month) return;
         this.pickerDate.setMonth(month - 1);
         this.renderDatePicker();
@@ -239,7 +247,7 @@ export class DatePickerService {
         this.toggleAltMode('year');
     }
 
-    private addYearEntry(downSide:boolean = false) {
+    private addYearEntry(downSide: boolean = false) {
         var startYear = Number(this.dpYearSelect.children[downSide ? this.dpYearSelect.children.length - 1 : 0].textContent),
             child;
         if ((!downSide && this.dpContent.scrollTop < 300) || (downSide && this.dpContent.scrollHeight - this.dpContent.scrollTop < 500)) {
@@ -261,7 +269,7 @@ export class DatePickerService {
         }
     }
 
-    private selectYear(event:MouseEvent) {
+    private selectYear(event: MouseEvent) {
         this.toggleAltMode();
         var year = Number(event.srcElement.textContent);
         if (!year) return;
@@ -273,12 +281,13 @@ export class DatePickerService {
     private getTemplate() {
         var months = this.pickerDate.locale.monthNames,
             monthHtml = '',
-            year = this.pickerDate.getFullYear(),
+            minYear = +this.options.minYear || (this.pickerDate.getFullYear() - 10),
+            maxYear = +this.options.maxYear || (this.pickerDate.getFullYear() + 10),
             yearHtml = '';
         for (var i = 0, il = months.length; i < il; ++i) {
             monthHtml += `<div data-index="${i + 1}">${months[i]}</div>`;
         }
-        for (var i = year + 10; i > year - 20; i--) {
+        for (var i = maxYear; i >= minYear; i--) {
             yearHtml += `<div>${i}</div>`;
         }
         return `
@@ -314,11 +323,19 @@ export class DatePickerService {
         this.toggleDatePicker();
     }
 
-    public show(options:IDatePickerOptions):IPromise<number> {
+    public show(options: IDatePickerOptions): IPromise<number> {
         this.options = options;
         this.inputDate = DatePickerService.defaultDateTime ? new DatePickerService.defaultDateTime() : DateTimeFactory.create(this.Setting.locale);
         if (options.timestamp) {
             this.inputDate.setTime(options.timestamp);
+        }
+        var minYear = +this.options.minYear || (this.pickerDate.getFullYear() - 10);
+        var maxYear = +this.options.maxYear || (this.pickerDate.getFullYear() + 10);
+        this.dpYearSelect.innerHTML = '';
+        for (var i = maxYear; i >= minYear; i--) {
+            var child = document.createElement('div');
+            child.textContent = `${i}`;
+            this.dpYearSelect.appendChild(child);
         }
         this.pickerDate.setTime(this.inputDate.getTime());
         this.defer = this.$q.defer<number>();
@@ -332,7 +349,7 @@ export class DatePickerService {
         this.defer.reject();
     }
 
-    public static setDateTime(dateTime:IDateTime) {
+    public static setDateTime(dateTime: IDateTime) {
         DatePickerService.defaultDateTime = dateTime;
     }
 }

@@ -1,7 +1,7 @@
 .sidenav {
     position: fixed;
     #{$float}: 0;
-    z-index: 9;
+    z-index: $zIndexDialog;
     top: $headerHeight;
     bottom: 0;
     width: $sidenavWidth;

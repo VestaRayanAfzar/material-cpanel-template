@@ -23,6 +23,7 @@ import {RootController} from "./modules/RootController";
 import {AppMenuService} from "./service/AppMenuService";
 import {AppMenu} from "./config/app-menu";
 import {Err} from "vesta-util/Err";
+import {BreadcrumbController} from "./directive/breadcrumb";
 
 export interface IExtRootScopeService extends IRootScopeService {
     rvm: RootController;
@@ -46,10 +47,11 @@ export class ClientApp {
      * This method is equivalent to angular.module.config & angular.module.run
      */
     private init(router: IRouteFunction) {
-        this.module = angular.module(this.setting.name, ['ngMessages', 'ui.router', 'ngMaterial', 'md.data.table']);
+        this.module = angular.module(this.setting.name, ['ngMessages', 'ui.router', 'ngMaterial']);
         this.module.constant('Setting', this.setting);
         // CONFIG
         AppMenuService.setMenuItems('main-menu', AppMenu);
+        BreadcrumbController.setAppStates(AppMenu);
         AuthService.setDefaultPolicy(AclPolicy.Deny);
         this.module.config(['$stateProvider', '$locationProvider', '$urlRouterProvider', '$httpProvider', '$compileProvider',
             function ($stateProvider: IStateProvider, $locationProvider: ILocationProvider, $urlRouterProvider: IUrlRouterProvider, $httpProvider: IHttpProvider, $compileProvider: ICompileProvider) {
@@ -62,7 +64,7 @@ export class ClientApp {
          * After this, these services can be used by their `getInstance` method. e.g AuthService.getInstance()
          * This action will cause the DI on class names to be much shorter => increasing the readability
          */
-        this.module.run(['apiService', 'authService', 'logService', 'formService', 'notificationService', 'metaTagsService', (apiService, authService, logService, formService, notificationService, metaTagsService)=> {
+        this.module.run(['apiService', 'authService', 'logService', 'formService', 'notificationService', 'metaTagsService', 'translateService', (apiService, authService, logService, formService, notificationService, metaTagsService, translateService)=> {
         }]);
         // RUN
         this.module.run(['$rootScope', '$state', 'networkService', 'i18nService', 'appCacheService',

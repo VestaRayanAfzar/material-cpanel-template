@@ -55,8 +55,8 @@ module.exports = function (dir, setting) {
             dir.npm + '/angular-aria/angular-aria.js',
             dir.npm + '/angular-messages/angular-messages.js',
             dir.npm + '/angular-ui-router/release/angular-ui-router.js',
-            dir.npm + '/angular-material/angular-material.js',
-            dir.npm + '/angular-material-data-table/dist/md-data-table.js'
+            dir.npm + '/angular-material/angular-material.js'
+            //dir.npm + '/angular-material-data-table/dist/md-data-table.js'
         ];
         var stream = gulp.src(libs).pipe(concat('lib.js'));
         if (setting.production) {

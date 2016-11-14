@@ -14,7 +14,6 @@ import {I18nService} from "../service/I18nService";
 import {AppMenuService} from "../service/AppMenuService";
 import {LogService} from "../service/LogService";
 import {translateFilter} from "../filter/translateFilter";
-import {paginationFilter} from "../filter/paginationFilter";
 import {dateTimeFilter} from "../filter/dateTimeFilter";
 import {animDirection} from "../directive/animDirection";
 import {currencyInput} from "../directive/currencyInput";
@@ -26,7 +25,12 @@ import {metaTags} from "../directive/metaTags";
 import {sidenav} from "../directive/sidenav";
 import {menuTrigger} from "../directive/menuTrigger";
 import {appMenu} from "../directive/appMenu";
+import {themeSelect} from "../directive/themeSelect";
+import {breadcrumb} from "../directive/breadcrumb";
+import {pagination} from "../directive/pagination";
 import {carousel} from "../directive/carousel";
+import {dateTime} from "../directive/dateTime";
+import {datatable} from "../directive/datatable";
 import {RootController} from "../modules/RootController";
 import {HomeController} from "../modules/HomeController";
 import {AboutController} from "../modules/AboutController";
@@ -44,13 +48,13 @@ import {UserController} from "../modules/acl/user/UserController";
 ///<vesta:import/>
 
 interface IExporter {
-    controller:any;
-    service:any;
-    filter:any;
-    directive:any;
+    controller: any;
+    service: any;
+    filter: any;
+    directive: any;
 }
 
-export const exporter:IExporter = {
+export const exporter: IExporter = {
     service: {
         i18nService: I18nService,
         translateService: TranslateService,
@@ -71,7 +75,6 @@ export const exporter:IExporter = {
     },
     filter: {
         dateTime: dateTimeFilter,
-        pagination: paginationFilter,
         tr: translateFilter,
         ///<vesta:ngFilter/>
     },
@@ -87,6 +90,11 @@ export const exporter:IExporter = {
         menuTrigger: menuTrigger,
         appMenu: appMenu,
         carousel: carousel,
+        themeSelect: themeSelect,
+        breadcrumb: breadcrumb,
+        pagination: pagination,
+        dateTime: dateTime,
+        datatable: datatable,
         ///<vesta:ngDirective/>
     },
     controller: {

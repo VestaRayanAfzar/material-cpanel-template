@@ -2,6 +2,7 @@
 /ionic.project
 npm-debug*
 tsd-debug*
+yarn-error*
 /build
 /node_modules
 /platforms

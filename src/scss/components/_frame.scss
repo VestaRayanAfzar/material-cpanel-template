@@ -1,19 +1,45 @@
 html, body {
     width: 100%;
     height: 100%;
-    overflow: visible;
 }
 
+$bgColors: #1bbb35, #4a97b3, #3dd5c8, #beaf9c, #c77962, #495272, #5a4c85;
 html {
     overflow-x: hidden;
     overflow-y: scroll;
+    background: $bodyBgColor no-repeat fixed;
+    background-size: cover;
+    @for $i from 1 through 7 {
+        &.theme-0#{$i} {
+            background-image: url("../img/bgs/0#{$i}.jpg");
+            background-color: nth($bgColors, $i);
+        }
+    }
 }
 
+/*
+<body>
+    <div#root-page>
+        <header.main-header/>
+        <main.main-content>
+            <div#content-wrapper>
+                <breadcrumb/>
+                <div[ui-view=master]/>
+                <footer.main-footer/>
+            </div>
+            <sidenav/>
+        </main>
+    </div>
+</body>
+*/
 body {
+    overflow: visible;
+    background: transparent;
     min-width: $layoutSmallMin;
 }
 
 #root-page {
+    border: 2px solid lime;
     min-height: 100%;
 }
 
@@ -23,26 +49,29 @@ body {
     top: 0;
     width: 100%;
     z-index: $zIndexHeader;
+    align-items: center;
 }
 
 .main-content {
-    height: 100%;
-    position: relative;
-    //flex: 1;
-    //display: flex;
-    //flex-direction: column;
-    //border: 2px solid red;
-    [ui-view="master"] {
-        //flex: 1;
-        display: flex;
-        flex-direction: column;
-        //border: 2px solid blue;
-        min-height: 100%;
-        min-height: calc(100% - #{$footerHeight});
-        .page {
-            padding-top: $headerHeight - 2;
-            flex: 1;
-        }
+    border: 2px solid fuchsia;
+    min-height: 100%;
+}
+
+#content-wrapper {
+    border: 2px solid yellow;
+    min-height: 100%;
+    padding-top: $headerHeight;
+    transition: all $transitionLongDuration $easeInOut;
+}
+
+[ui-view="master"] {
+    border: 2px solid red;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    min-height: calc(100% - #{$footerHeight});
+    .page {
+        flex: 1;
     }
 }
 

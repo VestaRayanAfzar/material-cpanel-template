@@ -1,4 +1,4 @@
-$triggerHeight: ceil($headerHeight/2);
+$triggerHeight: ceil($headerHeight/2) !default;
 $triggerBarHeight: ceil($triggerHeight / 6);
 $rotationDegree: 45deg;
 

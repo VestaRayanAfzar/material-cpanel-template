@@ -1,0 +1,167 @@
+$inputBorderRadius: 20px;
+.md-dialog-is-showing {
+    #root-page {
+        //transition: all $transitionShortDuration;
+        @include filter(blur(7px));
+    }
+}
+
+.md-input-wrapper {
+    //    [ng-messages] {
+    //        color: $error !important;
+    //        font-size: 12px;
+    //    }
+    //md-chips .md-chips {
+    //    margin-bottom: 18px;
+    //}
+    //.md-chip-content {
+    //    display: inline-block;
+    //}
+    //.md-chip-remove-container {
+    //    display: inline-block;
+    //}
+}
+
+md-autocomplete[md-floating-label] md-input-container {
+    padding-bottom: 0;
+}
+
+md-dialog {
+    background: transparentize($white, 0.7);
+    min-width: $layoutSmallMin;
+    md-toolbar {
+        min-height: 45px !important;
+        max-height: 45px !important;
+        background-color: $white !important;
+        color: $darkGray !important;
+        md-icon {
+            color: $darkGray !important;
+        }
+    }
+    md-dialog-actions {
+        justify-content: center !important;
+        button {
+            border-radius: $inputBorderRadius !important;
+            min-width: 190px !important;
+            color: $white !important;
+            background: $orange !important;
+            margin-#{$float}: 25px !important;
+            &.md-raised {
+                background: $green !important;
+            }
+        }
+    }
+}
+
+md-backdrop.md-opaque {
+    background: black !important;
+    opacity: 0.6;
+}
+
+%form-inp-element {
+    background: transparentize($white, 0.5) !important;
+    border-radius: $inputBorderRadius !important;
+    height: 40px !important;
+    padding-#{$float}: 18px !important;
+    padding-#{$opposite-float}: 18px !important;
+    font-family: $baseFontFamily !important;
+}
+
+%form-inp-wrapper {
+    margin: 30px auto 0 auto;
+    display: block;
+    max-width: 500px;
+}
+
+.md-input-wrapper {
+    @extend %form-inp-wrapper;
+}
+
+md-chips-wrap {
+    @extend %form-inp-element;
+}
+
+md-input-container {
+    transform: none !important;
+    &.md-block {
+        @extend %form-inp-wrapper;
+    }
+    &.date-time-wrapper {
+        input {
+            width: calc(100% - 50px) !important;
+        }
+    }
+    .md-errors-spacer {
+        min-height: 1px !important;
+    }
+    label {
+        padding-#{$float}: 18px !important;
+    }
+    .dp-trigger {
+        border: solid 2px rgba(0, 0, 0, 0) !important;
+        display: inline-block !important;
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50% !important;
+        padding: 6px !important;
+        background: transparentize($white, 0.5) !important;
+    }
+    &.md-input-focused, &.md-input-has-value {
+        label {
+            transform: translate3d(0, -2px, 0) scale(1) !important;
+            color: inherit !important;
+        }
+        input {
+            border: solid 2px $borderColor !important;
+            background: transparentize($white, 0.2) !important;
+        }
+        .dp-trigger {
+            border: solid 2px $borderColor !important;
+            background: transparentize($white, 0.2) !important;
+        }
+
+    }
+    input, md-select, .md-input, .file-upload {
+        @extend %form-inp-element;
+    }
+}
+
+md-autocomplete {
+    .clear-value {
+        position: absolute;
+        #{$opposite-float}: 8px;
+        top: 8px;
+        transform: scale(0);
+        transition: transform $transitionShortDuration;
+        outline: none;
+        color: $grey !important;
+        cursor: pointer;
+        &:hover {
+            color: $darkGray !important;
+        }
+        &.active {
+            transform: scale(1);
+        }
+    }
+}
+
+.list-header {
+    position: relative;
+    .delete-item {
+        position: absolute;
+        top: 8px;
+        #{$opposite-float}: 6px;
+        md-icon {
+            cursor: pointer;
+            outline: none;
+            &:hover {
+                color: $orange !important;
+            }
+        }
+
+    }
+}
+
+button {
+    white-space: nowrap !important;
+}

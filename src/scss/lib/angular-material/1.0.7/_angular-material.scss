@@ -1655,7 +1655,7 @@ $chip-padding: 0 rem(1.2) 0 rem(1.2) !default;
 $chip-input-padding: 0 !default;
 $chip-remove-padding-right: rem(2.2) !default;
 $chip-remove-line-height: rem(2.2) !default;
-$chip-margin: rem(0.8) rem(0.8) 0 0 !default;
+$chip-margin: rem(0.4) rem(0.8) 0 0 !default;
 $chip-wrap-padding: 0 0 rem(0.8) rem(0.3) !default;
 $chip-delete-icon-size: rem(1.8) !default;
 $contact-chip-padding: 0 rem(2.5) 0 0 !default;
@@ -1665,10 +1665,10 @@ $contact-chip-name-width: rem(12) !default;
 
 .md-contact-chips {
     .md-chips {
-        .md-chip {
+        .md-chip, md-chip {
             padding: $contact-chip-padding;
             .md-contact-avatar {
-        float: $float;
+                float: $float;
                 img {
                     height: $chip-height;
                     border-radius: $chip-height / 2;
@@ -1714,7 +1714,7 @@ $contact-chip-name-width: rem(12) !default;
     &:not(.md-readonly) {
         cursor: text;
 
-        .md-chip:not(.md-readonly) {
+        .md-chip:not(.md-readonly), md-chip:not(.md-readonly) {
             padding-#{$opposite-float}: $chip-remove-padding-right;
 
             .md-chip-content {
@@ -1723,7 +1723,7 @@ $contact-chip-name-width: rem(12) !default;
         }
     }
 
-    .md-chip {
+    .md-chip, md-chip {
         cursor: default;
         border-radius: $chip-height / 2;
         display: block;
@@ -1731,14 +1731,14 @@ $contact-chip-name-width: rem(12) !default;
         line-height: $chip-height;
         margin: $chip-margin;
         padding: $chip-padding;
-    float: $float;
+        float: $float;
         box-sizing: border-box;
         max-width: 100%;
         position: relative;
 
         .md-chip-content {
             display: block;
-      float: $float;
+            float: $float;
             white-space: nowrap;
             max-width: 100%;
             overflow: hidden;
@@ -1749,7 +1749,7 @@ $contact-chip-name-width: rem(12) !default;
         }
         .md-chip-remove-container {
             position: absolute;
-            #{$opposite-float}: 0;
+            #{$opposite-float}: -5px;
             line-height: $chip-remove-line-height;
         }
         .md-chip-remove {
@@ -1778,7 +1778,7 @@ $contact-chip-name-width: rem(12) !default;
         line-height: $chip-height;
         margin: $chip-margin;
         padding: $chip-input-padding;
-    float: $float;
+        float: $float;
         input {
             &:not([type]),&[type="email"],&[type="number"],&[type="tel"],&[type="url"],&[type="text"] {
                 border: 0;

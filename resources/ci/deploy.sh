@@ -7,26 +7,6 @@ NODE_PKG_CACHE_PATH=/tmp/cpanel_node_modules
 WD=`pwd`
 counter=0
 
-npm_install(){
-  BACKUP_PATH=${NODE_PKG_CACHE_PATH}_${1}
-
-  if [ -d ${BACKUP_PATH} ]; then
-    cp -R ${BACKUP_PATH} node_modules
-  fi
-
-  if [ $1 == "production" ]; then
-    npm install --no-progress --production
-  else
-    npm install --no-progress
-  fi;
-
-  if [ -d ${BACKUP_PATH} ]; then
-    rm -rf ${BACKUP_PATH}
-  fi
-
-  cp -R node_modules ${BACKUP_PATH}
-}
-
 print_status(){
   ((counter=counter+1))
   echo
@@ -43,8 +23,7 @@ git submodule foreach git checkout master
 mv resources/gitignore/src/app/config/setting.var.ts src/app/config/setting.var.ts
 
 print_status "Installing Node Packages"
-#npm install --no-progress
-npm_install dev
+npm install
 print_status "Running Deploy Tasks"
 gulp deploy
 
@@ -56,8 +35,7 @@ cd ${CLONE_PATH}
 print_status "Installing Node Packages for Web Server"
 cp package.json build/app/server/package.json
 cd build/app/server
-#npm install --production --no-progress
-npm_install production
+npm install --no-progress
 
 cd "$WD"
 if [ -d "$DEPLOY_PATH" ]; then

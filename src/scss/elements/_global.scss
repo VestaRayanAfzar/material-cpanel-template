@@ -46,10 +46,8 @@ a {
     }
 }
 
-.pane {
-    height: 100%;
-    width: 100%;
-    position: relative;
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
 }
 
 .en {
@@ -83,19 +81,4 @@ a {
         height: 30px;
         padding: 5px;
     }
-}
-
-// material
-.md-input-wrapper {
-    [ng-messages] {
-        color: $error !important;
-        font-size: 12px;
-    }
-    md-chips .md-chips {
-        margin-bottom: 18px;
-    }
-}
-
-md-autocomplete[md-floating-label] md-input-container {
-    padding-bottom: 0;
 }

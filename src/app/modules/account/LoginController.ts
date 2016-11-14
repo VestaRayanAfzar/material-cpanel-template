@@ -10,14 +10,14 @@ import IFormController = angular.IFormController;
 
 
 export class LoginController extends BaseController {
-    private user:User;
-    private userForm:IFormController;
+    private user: User;
+    private userForm: IFormController;
     public static $inject = ['$state'];
 
-    constructor(private $state:IStateService) {
+    constructor(private $state: IStateService) {
         super();
         this.user = new User();
-        this.metaTagsService.setTitle('Login');
+        this.metaTagsService.setTitle(this.translate('login'));
     }
 
     public login() {
@@ -31,13 +31,13 @@ export class LoginController extends BaseController {
                     if (result.error.code == Err.Code.Validation) {
                         this.formService.evaluate(result.error['violations'], this.userForm);
                     }
-                    return this.notificationService.toast(result.error.message);
+                    return this.notificationService.toast(this.translate(result.error.message));
                 }
                 if (result.items.length == 1) {
                     this.authService.login(result.items[0]);
                     return this.$state.go('home');
                 }
-                this.notificationService.toast('نام کاربری یا کلمه عبور وارد شده صحیح نمی باشد');
+                this.notificationService.toast(this.translate('wrong_user_pass'));
             });
     }
 

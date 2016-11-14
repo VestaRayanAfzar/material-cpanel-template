@@ -1,25 +1,36 @@
 <md-input-container class="md-block">
     <label for="name">name</label>
-    <input type="text" name="name" ng-model="vm.roleGroup.name" id="name" required/>
-    <div ng-messages="vm.roleGroupForm.name.$dirty && vm.roleGroupForm.name.$error">
+    <input type="text" name="name" id="name" ng-model="vm.roleGroup.name" required/>
+    <div ng-if="vm.roleGroupForm.$dirty" ng-messages="vm.roleGroupForm.name.$error">
         <div ng-message="required">This field is required</div>
         <div ng-message="unique">Duplicate Entry</div>
     </div>
 </md-input-container>
-<md-input-container class="md-block">
-    <label class="md-no-float" for="status">status</label>
-    <md-checkbox name="status" ng-model="vm.roleGroup.status" id="status"/>
-</md-input-container>
+
 <md-input-container class="md-block">
     <label for="desc">desc</label>
-    <textarea name="desc" ng-model="vm.roleGroup.desc" id="desc"></textarea>
+    <textarea resize="y" name="desc" id="desc" ng-model="vm.roleGroup.desc"></textarea>
 </md-input-container>
-<div class="md-block">
-    <div>
-        <label for="role">roles</label>
-    </div>
-    <div class="checkbox-item" ng-repeat="role in vm.roles">
-        <md-checkbox name="role" ng-model="vm.selectedRoles[role.id]" id="role"/>
-        <span>{{role.name}}</span>
-    </div>
+
+<div class="md-input-wrapper">
+    <md-chips ng-model="vm.roleGroup.roles" md-require-match="true">
+        <md-autocomplete md-input-name="roles" md-input-id="roles" md-search-text="vm.rolesSearchText" md-items="item in vm.searchRoles(vm.rolesSearchText)" md-item-text="item.name" md-delay="300" placeholder="roles">
+            <span>{{item.name}}</span>
+        </md-autocomplete>
+        <md-chip-template>
+            <span>{{$chip.name}}</span>
+        </md-chip-template>
+    </md-chips>
 </div>
+
+<md-input-container class="md-block">
+    <label for="status">status</label>
+    <md-select name="status" id="status" ng-model="vm.roleGroup.status" required>
+        <md-option ng-value="1">{{'active'|tr}}</md-option>
+        <md-option ng-value="0">{{'inactive'|tr}}</md-option>
+    </md-select>
+    <div ng-if="vm.roleGroupForm.$dirty" ng-messages="vm.roleGroupForm.status.$error">
+        <div ng-message="required">This field is required</div>
+        <div ng-message="enum">Value must be one of the list items</div>
+    </div>
+</md-input-container>

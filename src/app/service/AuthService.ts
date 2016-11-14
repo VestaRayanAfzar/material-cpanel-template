@@ -1,36 +1,36 @@
 import {IUser} from "../cmn/models/User";
-import {IPermission} from "../cmn/models/Permission";
+import {IPermission, Permission} from "../cmn/models/Permission";
 import {IRoleGroup} from "../cmn/models/RoleGroup";
 import {IRole} from "../cmn/models/Role";
 import {IExtRootScopeService} from "../ClientApp";
 
 export interface IAclActions {
-    [action:string]:boolean;
+    [action: string]: boolean;
 }
 
 export interface IPermissionCollection {
-    [resource:string]:Array<string>;
+    [resource: string]: Array<string>;
 }
 
 interface IStateResourceMap {
-    [state:string]:IPermissionCollection;
+    [state: string]: IPermissionCollection;
 }
 
 export enum AclPolicy {Allow = 1, Deny}
 
 export class AuthService {
-    static instance:AuthService = null;
+    static instance: AuthService = null;
     static Events = {Update: 'auth-update'};
-    private tokenKeyName:string = 'auth-token';
-    private userKeyName:string = 'userData';
-    private storage:Storage = localStorage;
-    private user:IUser = null;
-    private permissions:IPermissionCollection = {};
-    private static defaultPolicy:AclPolicy = AclPolicy.Deny;
-    public static stateResourceMap:IStateResourceMap = {};
+    private tokenKeyName: string = 'auth-token';
+    private userKeyName: string = 'userData';
+    private storage: Storage = localStorage;
+    private user: IUser = null;
+    private permissions: IPermissionCollection = {};
+    private static defaultPolicy: AclPolicy = AclPolicy.Deny;
+    public static stateResourceMap: IStateResourceMap = {};
     public static $inject = ['$rootScope'];
 
-    constructor(private $rootScope:IExtRootScopeService) {
+    constructor(private $rootScope: IExtRootScopeService) {
         AuthService.instance = this;
         try {
             this.user = JSON.parse(this.storage.getItem(this.userKeyName));
@@ -40,11 +40,11 @@ export class AuthService {
         }
     }
 
-    public logout():void {
+    public logout(): void {
         this.login(<IUser>{});
     }
 
-    public login(user:IUser) {
+    public login(user: IUser) {
         this.user = user;
         this.storage.setItem(this.userKeyName, JSON.stringify(user));
         this.updatePermissions();
@@ -70,7 +70,7 @@ export class AuthService {
         this.$rootScope.$broadcast(AuthService.Events.Update, {user: this.user});
     }
 
-    public isGuest():boolean {
+    public isGuest(): boolean {
         return !(this.user && this.user.id);
     }
 
@@ -78,18 +78,18 @@ export class AuthService {
         return this.user;
     }
 
-    public setToken(token:string):void {
+    public setToken(token: string): void {
         this.storage.setItem(this.tokenKeyName, token);
     }
 
-    public getToken():string {
+    public getToken(): string {
         return <string>this.storage.getItem(this.tokenKeyName);
     }
 
     /**
      Check if user has access to all actions of all resources
      */
-    public hasAccessToState(state:string):boolean {
+    public hasAccessToState(state: string): boolean {
         if (!state) return true;
         var requiredPermissions = AuthService.stateResourceMap[state];
         if (!requiredPermissions) return AuthService.defaultPolicy == AclPolicy.Allow;
@@ -106,7 +106,7 @@ export class AuthService {
     /**
      Check if user has access to the action of resource
      */
-    public isAllowed(resource:string, action:string):boolean {
+    public isAllowed(resource: string, action: string): boolean {
         var userPermissions = this.permissions;
         var userActions = userPermissions[resource] || userPermissions['*'];
         if (!userActions) return AuthService.defaultPolicy == AclPolicy.Allow;
@@ -118,17 +118,19 @@ export class AuthService {
      In case of * action, the CRUD actions will be added by default.
      Developer must take care of other actions (other than CRUD), in case of *
      */
-    public getActionsOn(resource:string):IAclActions {
+    public getActionsOn(resource: string): IAclActions {
         var userPermissions = this.permissions;
         var userActions = userPermissions[resource] || userPermissions['*'];
         if (!userActions || !userActions.length) return <IAclActions>{};
-        var granted:IAclActions = {};
-        if (userActions.indexOf('*') >= 0) granted = {
-            create: true,
-            read: true,
-            update: true,
-            delete: true
-        };
+        var granted: IAclActions = {};
+        if (userActions.indexOf('*') >= 0) {
+            granted = {
+                [Permission.Action.Read]: true,
+                [Permission.Action.Add]: true,
+                [Permission.Action.Edit]: true,
+                [Permission.Action.Delete]: true
+            };
+        }
         for (var i = userActions.length; i--;) {
             granted[userActions[i]] = true;
         }
@@ -138,15 +140,15 @@ export class AuthService {
     /**
      Same states will overwrite each others
      */
-    public static registerPermissions(state:string, permissions?:IPermissionCollection) {
+    public static registerPermissions(state: string, permissions?: IPermissionCollection) {
         AuthService.stateResourceMap[state] = permissions || {};
     }
 
-    public static setDefaultPolicy(policy:AclPolicy) {
+    public static setDefaultPolicy(policy: AclPolicy) {
         AuthService.defaultPolicy = policy;
     }
 
-    public static getInstance():AuthService {
+    public static getInstance(): AuthService {
         return AuthService.instance;
     }
 }

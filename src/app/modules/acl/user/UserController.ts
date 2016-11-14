@@ -1,48 +1,86 @@
-import {IUser, User} from "../../../cmn/models/User";
-import {IQueryRequest, IQueryResult, IDeleteResult} from "vesta-schema/ICRUDResult";
-import {ExtArray} from "vesta-util/ExtArray";
-import {AuthService} from "../../../service/AuthService";
+import {AuthService, IAclActions} from "../../../service/AuthService";
 import {BaseController} from "../../BaseController";
-import IDialogService = angular.material.IDialogService;
+import {IUser, User, UserGender} from "../../../cmn/models/User";
+import {IQueryRequest, IQueryResult} from "vesta-schema/ICRUDResult";
+import {FieldType} from "vesta-schema/Field";
+import {Permission} from "../../../cmn/models/Permission";
+import {IDataTableOptions, IDataTableColumns} from "../../../directive/datatable";
 import IDialogOptions = angular.material.IDialogOptions;
+import IDialogService = angular.material.IDialogService;
 
 
 export class UserController extends BaseController {
+    public acl: IAclActions;
     private user: User;
-    private usersList: ExtArray<IUser> = new ExtArray<IUser>();
-    private selectedUsersList: Array<number> = [];
-    private dtOption: any;
-    private currentPage: number = 1;
+    private usersList: Array<IUser> = [];
+    private dtOptions: IDataTableOptions;
+    private dtColumns: IDataTableColumns<IUser>;
     private busy: boolean = false;
     public static $inject = ['$mdDialog'];
 
     constructor(private $mdDialog: IDialogService) {
         super();
-        this.dtOption = this.getDataTableOptions('List of users', this.loadMore.bind(this));
-        this.apiService.get<IQueryRequest<IUser>, IQueryResult<IUser>>('acl/user')
-            .then(result=> {
-                if (result.error) return this.notificationService.toast(result.error.message);
-                this.usersList.set(result.items);
-                this.usersList.removeByProperty('username', 'root');
-                this.dtOption.total = result.total;
-            })
+        this.metaTagsService.setTitle('User');
+        this.acl = this.authService.getActionsOn('user');
+        this.initDataTable();
+        this.fetchUsers({page: 1, limit: this.dtOptions.limit});
     }
 
-    public loadMore(page: number) {
-        if (this.busy || page <= this.currentPage) return;
+    public initDataTable() {
+        this.dtOptions = this.getDataTableOptions();
+        this.dtOptions.operations = {
+            read: this.fetchUsers.bind(this),
+            add: this.acl[Permission.Action.Add] ? this.addUser.bind(this) : null,
+            edit: this.acl[Permission.Action.Edit] ? this.editUser.bind(this) : null,
+            del: this.acl[Permission.Action.Delete] ? this.delUser.bind(this) : null
+        };
+        this.dtColumns = {
+            username: {
+                text: this.translate('username'),
+                type: FieldType.String
+            },
+            firstName: {
+                text: this.translate('firstName'),
+                type: FieldType.String
+            },
+            lastName: {
+                text: this.translate('lastName'),
+                type: FieldType.String
+            },
+            email: {
+                text: this.translate('email'),
+                type: FieldType.EMail
+            },
+            birthDate: {
+                text: this.translate('birthDate'),
+                type: FieldType.Timestamp
+            },
+            gender: {
+                text: this.translate('gender'),
+                type: FieldType.Enum,
+                render: (user: User)=> this.translate(UserGender[user.gender]),
+                options: UserGender
+            }
+        };
+    }
+
+    public fetchUsers(option: IQueryRequest<IUser>) {
+        if (this.busy) return;
         this.busy = true;
-        this.apiService.get<IQueryRequest<IUser>, IQueryResult<IUser>>('acl/user', {
-            limit: 10,
-            page: ++this.currentPage
-        })
+        this.apiService.get<IQueryRequest<IUser>, IQueryResult<IUser>>('acl/user', option)
             .then(result=> {
-                if (result.error) return this.notificationService.toast(result.error.message);
-                for (var i = 0; i < result.items.length; i++) {
-                    this.usersList.push(result.items[i]);
-                }
-                this.dtOption.total = result.total;
+                this.usersList = result.items;
                 this.busy = false;
             })
+            .catch(err=> {
+                this.notificationService.toast(this.translate(err.message));
+                this.busy = false;
+            });
+        if (option.page == 1) {
+            this.apiService.get<IQueryRequest<IUser>, IQueryResult<IUser>>('acl/user/count', option)
+                .then(result=> this.dtOptions.total = result.total)
+                .catch(err=> this.notificationService.toast(this.translate(err.message)));
+        }
     }
 
     public addUser(event: MouseEvent) {
@@ -54,45 +92,43 @@ export class UserController extends BaseController {
             targetEvent: event
         }).then((user) => {
             this.usersList.push(user);
-            this.notificationService.toast('New user has been added successfully');
-        }).catch(err=> err && this.notificationService.toast(err.message))
+            this.notificationService.toast(this.translate('info_add_record', this.translate('user')));
+        }).catch(err=> err && this.notificationService.toast(this.translate(err.message)))
     }
 
-    public editUser(event: MouseEvent, id: number) {
+    public editUser(event: MouseEvent, index: number) {
+        let userId = this.usersList[index].id;
         this.$mdDialog.show(<IDialogOptions>{
             controller: 'userEditController',
             controllerAs: 'vm',
             templateUrl: 'tpl/acl/user/userEditForm.html',
             parent: angular.element(document.body),
             targetEvent: event,
-            locals: {
-                id: id
-            }
+            locals: {id: userId}
         }).then((user: IUser) => {
-            this.usersList[this.usersList.indexOfByProperty('id', user.id)] = user;
+            this.usersList[this.findByProperty(this.usersList, 'id', user.id)] = user;
             this.notificationService.toast('user has been updated successfully');
-        }).catch(err=> err && this.notificationService.toast(err.message))
+        }).catch(err=> this.notificationService.toast(this.translate(err.message)))
     }
 
-    public delUser(event: MouseEvent) {
-        var confirm = this.$mdDialog.confirm()
+    public delUser(event: MouseEvent, index: number) {
+        let userId = this.usersList[index].id;
+        let confirm = this.$mdDialog.confirm()
             .parent(angular.element(document.body))
-            .title('Delete confirmation')
-            .textContent('Are you sure about deleting the select user')
+            .title('title_delete_confirm')
+            .textContent(this.translate('msg_delete_confirm', this.translate('user')))
             .targetEvent(event)
-            .ok('Yes').cancel('No');
-        this.$mdDialog.show(confirm).then(() => {
-            this.apiService.delete<Array<number>, IDeleteResult>('acl/user', this.selectedUsersList)
-                .then(result=> {
-                    if (result.error) return this.notificationService.toast(result.error.message);
-                    this.usersList.removeByProperty('id', this.selectedUsersList);
-                    this.selectedUsersList = [];
-                    this.notificationService.toast(result.items.length + ' user has been deleted successfully');
-                })
-        })
+            .ok(this.translate('yes')).cancel(this.translate('no'));
+        this.$mdDialog.show(confirm)
+            .then(()=> this.apiService.delete(`acl/user/${userId}}`))
+            .then(()=> {
+                this.usersList.splice(this.findByProperty(this.usersList, 'id', userId), 1);
+                this.notificationService.toast(this.translate('info_delete_record', this.translate('user')));
+            })
+            .catch(err=> this.notificationService.toast(this.translate(err.message)));
     }
 
-    static registerPermissions() {
+    public static registerPermissions() {
         AuthService.registerPermissions('acl.user', {'acl.user': ['read']});
     }
 }

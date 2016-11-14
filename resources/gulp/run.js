@@ -35,17 +35,18 @@ gulp.task('browse', function () {
  * @returns {{server: number, debug: number}}
  */
 function getHostPort() {
-    var port = {server: 8088, debug: 5858};
-        var yaml = require('yamljs');
-        var compose = yaml.load(path.join(root, 'docker-compose.yml'));
+    // port 5858 is in used by api server
+    var port = {server: 8088, debug: 5859};
+    var yaml = require('yamljs');
+    var compose = yaml.load(path.join(root, 'docker-compose.yml'));
     var service = compose.services['web'];
-        for (var i = service.ports.length; i--;) {
-            var ports = service.ports[i].split(':');
-            if (+ports[1] == service.environment.PORT) {
+    for (var i = service.ports.length; i--;) {
+        var ports = service.ports[i].split(':');
+        if (+ports[1] == service.environment.PORT) {
             port.server = +ports[0];
         } else {
             port.debug = +ports[0];
-            }
         }
+    }
     return port;
 }

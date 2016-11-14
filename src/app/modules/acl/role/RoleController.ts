@@ -1,78 +1,71 @@
-import {IRole, Role} from "../../../cmn/models/Role";
-import {IQueryRequest, IQueryResult, IDeleteResult} from "vesta-schema/ICRUDResult";
-import {ExtArray} from "vesta-util/ExtArray";
-import {IPermission} from "../../../cmn/models/Permission";
-import {AuthService} from "../../../service/AuthService";
+import {AuthService, IAclActions} from "../../../service/AuthService";
 import {BaseController} from "../../BaseController";
-import IDialogService = angular.material.IDialogService;
+import {IRole, Role} from "../../../cmn/models/Role";
+import {IQueryRequest, IQueryResult} from "vesta-schema/ICRUDResult";
+import {FieldType} from "vesta-schema/Field";
+import {Permission} from "../../../cmn/models/Permission";
+import {IDataTableOptions, IDataTableColumns} from "../../../directive/datatable";
+import {Status} from "../../../cmn/enum/Status";
 import IDialogOptions = angular.material.IDialogOptions;
+import IDialogService = angular.material.IDialogService;
 
-export interface IFormPermission {
-    resource: string;
-    actions: Array<{id: number,name: string}>;
-}
 
 export class RoleController extends BaseController {
+    public acl: IAclActions;
     private role: Role;
-    public rolesList: ExtArray<IRole> = new ExtArray<IRole>();
-    public selectedRolesList: Array<number> = [];
-    private dtOption: any;
-    private currentPage: number = 1;
+    private rolesList: Array<IRole> = [];
+    private dtOptions: IDataTableOptions;
+    private dtColumns: IDataTableColumns<IRole>;
     private busy: boolean = false;
-    public permissions: ExtArray<IFormPermission> = new ExtArray();
     public static $inject = ['$mdDialog'];
 
     constructor(private $mdDialog: IDialogService) {
         super();
-        this.dtOption = this.getDataTableOptions('List of roles');
-        this.getAllPermissions();
-        this.loadData();
+        this.metaTagsService.setTitle(this.translate('Role'));
+        this.acl = this.authService.getActionsOn('role');
+        this.initDataTable();
+        this.fetchRoles({page: 1, limit: this.dtOptions.limit});
     }
 
-    private loadData() {
-        this.apiService.get<IQueryRequest<IRole>, IQueryResult<IRole>>('role', {limit: 50})
-            .then(result=> {
-                this.rolesList.set(result.items);
-                this.rolesList.removeByProperty('name', 'admin');
-                this.dtOption.total = result.total;
-            })
-            .catch(reason=> this.notificationService.toast(reason.error.message))
+    public initDataTable() {
+        this.dtOptions = this.getDataTableOptions({pagination: false, search: false});
+        this.dtOptions.operations = {
+            read: this.fetchRoles.bind(this),
+            add: this.acl[Permission.Action.Add] ? this.addRole.bind(this) : null,
+            edit: this.acl[Permission.Action.Edit] ? this.editRole.bind(this) : null,
+            del: this.acl[Permission.Action.Delete] ? this.delRole.bind(this) : null
+        };
+        this.dtColumns = {
+            name: {
+                text: this.translate('name'),
+                type: FieldType.String
+            },
+            status: {
+                text: this.translate('status'),
+                type: FieldType.Enum,
+                render: (role: Role)=> this.translate(Status[role.status]),
+                options: Status
+            }
+        };
     }
 
-    private getAllPermissions() {
-        this.apiService.get<IQueryRequest<IPermission>,IQueryResult<IPermission>>('permission')
-            .then(result=> {
-                if (result.error) {
-                    return this.notificationService.toast(result.error.message);
-                }
-                for (let i = 0, il = result.items.length; i < il; ++i) {
-                    let p: IPermission = result.items[i];
-                    if (this.permissions.indexOfByProperty('resource', p.resource) < 0) {
-                        this.permissions.push({resource: p.resource, actions: []});
-                    }
-                    this.permissions.findByProperty('resource', p.resource)[0].actions.push({
-                        id: +p.id,
-                        name: p.action
-                    });
-                }
-            })
-    }
-
-    public loadMore(page: number) {
-        if (this.busy || page <= this.currentPage) return;
+    public fetchRoles(option: IQueryRequest<IRole>) {
+        if (this.busy) return;
         this.busy = true;
-        this.apiService.get<IQueryRequest<IRole>, IQueryResult<IRole>>('role', {
-            limit: 10,
-            page: ++this.currentPage
-        })
+        this.apiService.get<IQueryRequest<IRole>, IQueryResult<IRole>>('acl/role', option)
             .then(result=> {
-                if (result.error) return this.notificationService.toast(result.error.message);
-                for (let i = 0; i < result.items.length; i++) {
-                    this.rolesList.push(result.items[i]);
-                }
-                this.dtOption.total = result.total;
+                this.rolesList = result.items;
                 this.busy = false;
             })
+            .catch(err=> {
+                this.notificationService.toast(this.translate(err.message));
+                this.busy = false;
+            });
+        if (option.page == 1) {
+            this.apiService.get<IQueryRequest<IRole>, IQueryResult<IRole>>('acl/role/count', option)
+                .then(result=> this.dtOptions.total = result.total)
+                .catch(err=> this.notificationService.toast(this.translate(err.message)));
+        }
     }
 
     public addRole(event: MouseEvent) {
@@ -81,54 +74,46 @@ export class RoleController extends BaseController {
             controllerAs: 'vm',
             templateUrl: 'tpl/acl/role/roleAddForm.html',
             parent: angular.element(document.body),
-            targetEvent: event,
-            locals: {
-                permissions: this.permissions
-            }
-        })
-            .then((role) => {
-                this.rolesList.push(role);
-                this.notificationService.toast('New role has been added successfully');
-            })
+            targetEvent: event
+        }).then((role) => {
+            this.rolesList.push(role);
+            this.notificationService.toast(this.translate('info_add_record', this.translate('role')));
+        }).catch(err=> err && this.notificationService.toast(this.translate(err.message)))
     }
 
-    public editRole(event: MouseEvent, id: number) {
+    public editRole(event: MouseEvent, index: number) {
+        let roleId = this.rolesList[index].id;
         this.$mdDialog.show(<IDialogOptions>{
             controller: 'roleEditController',
             controllerAs: 'vm',
             templateUrl: 'tpl/acl/role/roleEditForm.html',
             parent: angular.element(document.body),
             targetEvent: event,
-            locals: {
-                id: id,
-                permissions: this.permissions
-            }
-        })
-            .then((role: IRole) => {
-                this.rolesList[this.rolesList.indexOfByProperty('id', role.id)] = role;
-                this.notificationService.toast('role has been updated successfully');
-            })
+            locals: {id: roleId}
+        }).then((role: IRole) => {
+            this.rolesList[this.findByProperty(this.rolesList, 'id', role.id)] = role;
+            this.notificationService.toast('role has been updated successfully');
+        }).catch(err=> this.notificationService.toast(this.translate(err.message)))
     }
 
-    public delRole(event: MouseEvent) {
+    public delRole(event: MouseEvent, index: number) {
+        let roleId = this.rolesList[index].id;
         let confirm = this.$mdDialog.confirm()
             .parent(angular.element(document.body))
-            .title('Delete confirmation')
-            .textContent('Are you sure about deleting the select role')
+            .title('title_delete_confirm')
+            .textContent(this.translate('msg_delete_confirm', this.translate('role')))
             .targetEvent(event)
-            .ok('Yes').cancel('No');
-        this.$mdDialog.show(confirm).then(() => {
-            this.apiService.delete<Array<number>, IDeleteResult>('role', this.selectedRolesList)
-                .then(result=> {
-                    if (result.error) return this.notificationService.toast(result.error.message);
-                    this.rolesList.removeByProperty('id', result.items);
-                    this.selectedRolesList = [];
-                    this.notificationService.toast(result.items.length + ' role has been deleted successfully');
-                })
-        })
+            .ok(this.translate('yes')).cancel(this.translate('no'));
+        this.$mdDialog.show(confirm)
+            .then(()=> this.apiService.delete(`acl/role/${roleId}`))
+            .then(()=> {
+                this.rolesList.splice(this.findByProperty(this.rolesList, 'id', roleId), 1);
+                this.notificationService.toast(this.translate('info_delete_record', this.translate('role')));
+            })
+            .catch(err=> this.notificationService.toast(this.translate(err.message)));
     }
 
-    static registerPermissions() {
+    public static registerPermissions() {
         AuthService.registerPermissions('acl.role', {'acl.role': ['read']});
     }
 }

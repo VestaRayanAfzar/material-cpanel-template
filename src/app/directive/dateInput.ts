@@ -3,44 +3,47 @@ import {IClientAppSetting} from "../config/setting";
 import {DatePickerService} from "../service/DatePickerService";
 import {DateTimeFactory} from "vesta-datetime/DateTimeFactory";
 import {IDateTime, DateTime} from "vesta-datetime/DateTime";
+import {IDatePickerOptions} from "../service/datePickerService";
 
 export class DateInputController {
     static $inject = ['Setting', 'datePickerService'];
 
-    constructor(private Setting:IClientAppSetting, private datePickerService:DatePickerService) {
+    constructor(private Setting: IClientAppSetting, private datePickerService: DatePickerService) {
     }
 
-    public getLocaleString():string {
+    public getLocaleString(): string {
         return this.Setting.locale;
     }
 
-    public show(timestamp:number) {
-        return this.datePickerService.show({timestamp: timestamp, clickToSelect: true});
+    public show(dpOption: IDatePickerOptions) {
+        return this.datePickerService.show(dpOption);
     }
 }
 
 export interface IDateInputScope extends IScope {
-    ngModel:any;
-    vm:DateInputController;
-    showPicker:string;
+    ngModel: any;
+    vm: DateInputController;
+    showPicker: string;
 }
 
 export interface IDateInput {
-    ():IDirective;
-    setDateTime:(dateTime:IDateTime)=>void;
-    defaultDateTime:IDateTime;
+    (): IDirective;
+    setDateTime: (dateTime: IDateTime) => void;
+    defaultDateTime: IDateTime;
 }
 
 /**
  * @ngdoc directive
  * @name dateInput
  * @restrict A
- * @element input
  *
  * @param {boolean} show-picker
+ * @param {boolean} is-range
+ * @param {number} min-year
+ * @param {number} max-year
  */
 
-export function dateInput():IDirective {
+export function dateInput(): IDirective {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -51,8 +54,9 @@ export function dateInput():IDirective {
         controller: DateInputController,
         controllerAs: 'vm',
         bindToController: false,
-        link: function (scope:IDateInputScope, $element:IAugmentedJQuery, attrs:IAttributes, ngModel:INgModelController) {
-            var inputDate:DateTime = dateInput['defaultDateTime'] ? new dateInput['defaultDateTime']() : DateTimeFactory.create(scope.vm.getLocaleString());
+        link: function (scope: IDateInputScope, $element: IAugmentedJQuery, attrs: IAttributes, ngModel: INgModelController) {
+            scope.ngModel = scope.ngModel || NaN;
+            var inputDate: DateTime = dateInput['defaultDateTime'] ? new dateInput['defaultDateTime']() : DateTimeFactory.create(scope.vm.getLocaleString());
             ngModel.$parsers.push(value=> {
                 var time = inputDate.validate(value);
                 if (time) {
@@ -64,7 +68,7 @@ export function dateInput():IDirective {
                 return 0;
             });
             ngModel.$formatters.push(value=> {
-                if (value > 0) {
+                if (!isNaN(value)) {
                     inputDate.setTime(scope.ngModel);
                     return inputDate.format('Y/m/d');
                 }
@@ -72,13 +76,24 @@ export function dateInput():IDirective {
             });
 
             if (scope.showPicker == "true") {
-                $element[0].addEventListener('click', dpHandler, false);
+                var dpTrigger = document.createElement('span');
+                dpTrigger.classList.add('material-icons');
+                dpTrigger.classList.add('dp-trigger');
+                dpTrigger.textContent = 'date_range';
+                $element[0].parentElement.appendChild(dpTrigger);
+                dpTrigger.addEventListener('click', dpHandler, false);
                 scope.$on('$destroy', function () {
                     $element[0].removeEventListener('click', dpHandler);
                 });
             }
             function dpHandler() {
-                scope.vm.show(Number(scope.ngModel))
+                var dpOption: IDatePickerOptions = {
+                    timestamp: Number(scope.ngModel),
+                    clickToSelect: true
+                };
+                if (attrs['minYear']) dpOption.minYear = attrs['minYear'];
+                if (attrs['maxYear']) dpOption.maxYear = attrs['maxYear'];
+                scope.vm.show(dpOption)
                     .then(timestamp=> {
                         scope.ngModel = timestamp;
                     })
@@ -87,6 +102,6 @@ export function dateInput():IDirective {
     };
 }
 
-dateInput['setDateTime'] = function (dateTime:IDateTime) {
+dateInput['setDateTime'] = function (dateTime: IDateTime) {
     dateInput['defaultDateTime'] = dateTime;
 };

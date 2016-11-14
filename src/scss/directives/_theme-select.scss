@@ -1,0 +1,25 @@
+.theme-select {
+    display: inline-block;
+    vertical-align: top;
+    color: $light;
+    md-icon {
+        color: $light;
+    }
+}
+
+.theme-menu {
+    padding: 0;
+}
+
+md-menu-item.theme-item {
+    overflow: hidden;
+    cursor: pointer;
+    img {
+        width: 100px;
+        height: auto;
+        display: inline-block;
+        vertical-align: middle;
+        padding: 0;
+        margin: 1px;
+    }
+}

@@ -1,0 +1,138 @@
+$dataTableCellHeight: 32px;
+
+.dt-wrapper {
+    width: 90%;
+    margin: 10px auto 20px auto;
+    border-radius: $borderRadius;
+}
+
+.data-table {
+    background: transparentize($light, .5);
+    width: 100%;
+    overflow-x: auto;
+    table {
+        table-layout: auto;
+        width: 100%;
+        img {
+            max-height: $dataTableCellHeight;
+        }
+    }
+    thead {
+        %acs-dsc {
+            content: '';
+            position: absolute;
+            border: 10px solid transparent;
+            width: 0;
+            height: 0;
+            #{$opposite-float}: 5px;
+            top: 50%;
+        }
+        th {
+            padding: 10px 3px 0 0;
+            text-align: start;
+            white-space: nowrap;
+            vertical-align: middle;
+            height: $dataTableCellHeight;
+            cursor: default;
+            position: relative;
+            &.sortable-column {
+                cursor: pointer;
+                user-select: none;
+            }
+            &[data-asc="1"]:after {
+                @extend %acs-dsc;
+                border-bottom-color: $teal;
+                border-top: 0;
+            }
+            &[data-asc="2"]:after {
+                @extend %acs-dsc;
+                border-top-color: $deepOrange;
+                border-bottom: 0;
+            }
+        }
+    }
+    tbody {
+        tr {
+            &:nth-child(odd) {
+                background: transparentize($white, 0.1);
+            }
+            &:nth-child(even) {
+                background: transparentize($white, 0.4);
+            }
+            &:hover {
+                background: transparentize($white, 0.9) !important;
+            }
+        }
+        td {
+            white-space: nowrap;
+            padding: 2px 5px 0 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+}
+
+th.action-column, td.action-column {
+    text-align: center !important;
+}
+
+th.action-column {
+    .material-icons {
+        font-size: $fontSizeXLarge;
+        font-weight: bold;
+    }
+}
+
+td.action-column {
+    .md-button {
+        padding: 0;
+        vertical-align: middle;
+        margin: 2px;
+        .material-icons {
+            vertical-align: bottom;
+        }
+    }
+}
+
+.filter-row {
+    background: transparentize($light, 0.3);
+    .md-icon-button {
+        color: white;
+        md-icon {
+            color: white;
+        }
+    }
+    td {
+        height: $dataTableCellHeight;
+        vertical-align: middle;
+        > div {
+            position: relative;
+            margin: 2px;
+            padding-#{$opposite-float}: 0;
+        }
+    }
+    input, select {
+        width: 100%;
+        height: $dataTableCellHeight;
+        border-radius: 0;
+        padding: 0 5px 0;
+        background: transparent;
+        border: 1px solid $borderColor;
+    }
+    .dp-trigger {
+        #{$opposite-float}: 0;
+        background: transparent;
+        border: 0;
+        top: 4px;
+    }
+    input[date-input] {
+        min-width: 100px;
+        // pickerIconWidth = 24px
+        padding-left: 26px;
+    }
+
+    button {
+        margin-top: 4px;
+        margin-bottom: 0;
+    }
+}
